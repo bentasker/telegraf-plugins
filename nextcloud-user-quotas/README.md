@@ -52,4 +52,4 @@ To graph out per user, but exclude specific users, you can use the following Flu
     |> filter(fn: (r) => r._measurement == "nextcloud_quotas" and r._field == "percent_used")
     |> filter(fn: (r) => r.user != "admin" and r.user != "telegraf_api_poller")
     |> aggregateWindow(every: 5m, fn: mean)
-    
+    |> keep(columns: ["_time", "user", "_value"])
