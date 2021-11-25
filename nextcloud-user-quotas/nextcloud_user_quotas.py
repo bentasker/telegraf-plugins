@@ -6,6 +6,7 @@
 #
 import base64
 import requests
+import sys
 import time
 
 # Config
@@ -34,8 +35,11 @@ def makeRequest(path, params=False):
 
 
     r = SESSION.get(f"{NEXTCLOUD_PROTO}://{NEXTCLOUD_DOMAIN}/ocs/v2.php/cloud/{path}", params=params, headers=headers)
-    return r.json()
     
+    if r.status_code == 200:
+        return r.json(), 200
+    else:
+        return False, r.status_code
     
     
     
@@ -43,8 +47,12 @@ def getUserList():
     ''' Get a list of users
     
     '''
-    resp_json = makeRequest('/users')   
-    return resp_json['ocs']['data']['users']
+    resp_json, stat_code = makeRequest('/users')
+    
+    if not resp_json:
+        return False, stat_code
+    
+    return resp_json['ocs']['data']['users'], stat_code
         
     
     
@@ -52,15 +60,19 @@ def getUserInfo(user):
     ''' Fetch info from the API for a username
     
     '''
-    userinfo = makeRequest(f'/users/{user}')
+    userinfo, stat_code = makeRequest(f'/users/{user}')
+    
+    if not userinfo:
+        return False, stat_code
     
     if userinfo['ocs']['data']['quota']['quota'] < 0:
         # Unlimited
         userinfo['ocs']['data']['quota']['quota'] = 0
         userinfo['ocs']['data']['quota']['relative'] = 0.00
     
-    return userinfo['ocs']['data']['quota']
+    return userinfo['ocs']['data']['quota'], stat_code
     
+
 
 def quota_to_lp(user, quota_obj):
     ''' Take a quota object and output Influx line protocol
@@ -70,13 +82,40 @@ def quota_to_lp(user, quota_obj):
 
 
 
+def status_to_lp(stat_code, user = False):
+    ''' Accept a status code and an optional user and create a line of LP
+    
+    '''
+    if user:
+        s = f"{MEASUREMENT},user={user},hostname={NEXTCLOUD_DOMAIN} api_status_code={stat_code} {TIMESTAMP}"    
+    else:
+        s = f"{MEASUREMENT},user=none,hostname={NEXTCLOUD_DOMAIN} api_status_code={stat_code} {TIMESTAMP}"
+    
+    return s
+
+
+
 def main():
     ''' Main entrypoint
     
     '''
-    users = getUserList()
+    users, stat_code = getUserList()
+
+    print(status_to_lp(stat_code))    
+    if not users:
+        # API returned an error
+        sys.exit(1)
+    
+    # Otherwise
     for user in users:
-        quota_obj = getUserInfo(user)
+        quota_obj, stat_code = getUserInfo(user)
+        
+        print(status_to_lp(stat_code, user))        
+        if not quota_obj:
+            # API returned an error
+            # Other users might work though
+            continue
+        
         lp = quota_to_lp(user, quota_obj)
         print(lp)
     
