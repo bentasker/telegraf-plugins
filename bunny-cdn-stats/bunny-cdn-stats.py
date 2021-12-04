@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-
+#
+# Telegraf Exec plugin to poll BunnyCDN's API and retrieve stats
+#
+# Copyright (c) 2021 B Tasker
+# Released under GNU GPL v3 - https://www.gnu.org/licenses/gpl-3.0.txt
+#
+#
 import requests
 import sys
 import time

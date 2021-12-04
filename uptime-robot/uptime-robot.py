@@ -4,6 +4,8 @@
 # Hit the Uptime Robot API to fetch response times and status
 #
 # Copyright (c) 2021 B Tasker
+# Released under GNU GPL v3 - https://www.gnu.org/licenses/gpl-3.0.txt
+#
 #
 import requests
 

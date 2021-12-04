@@ -2,6 +2,8 @@
 
 An `exec` plugin that uses Nextcloud's API in order to retrieve current quota usage for each Nextcloud user - allowing reporting and alarming.
 
+A fuller example of how to set this up can be [seen on my site](https://www.bentasker.co.uk/posts/documentation/linux/collecting-nextcloud-user-quota-info-with-telegraf.html)
+
 
 ### Nextcloud setup
 
@@ -53,3 +55,13 @@ To graph out per user, but exclude specific users, you can use the following Flu
     |> filter(fn: (r) => r.user != "admin" and r.user != "telegraf_api_poller")
     |> aggregateWindow(every: 5m, fn: mean)
     |> keep(columns: ["_time", "user", "_value"])
+
+    
+----
+
+### Copyright
+
+Copyright (c) 2021 [Ben Tasker](https://www.bentasker.co.uk)
+
+Released under [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.txt)
+    
