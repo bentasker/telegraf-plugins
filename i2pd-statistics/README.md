@@ -46,6 +46,12 @@ The plugin is also not currently coded particularly defensively - I wanted to ge
 
 ----
 
+### Graphing
+
+My post [Monitoring I2PD with Telegraf](https://www.bentasker.co.uk/posts/documentation/general/monitoring-i2pd-with-telegraf.html) gives some examples of how to graph these stats out using Flux.
+
+----
+
 ### Statistics Collected
 
 **Tags**
@@ -87,7 +93,6 @@ The plugin is also not currently coded particularly defensively - I wanted to ge
     i2pd,url=http://localhost:7070,tunnel_state=building,direction=outbound tunnel_count=0i
     i2pd,url=http://localhost:7070,tunnel_state=failed,direction=outbound tunnel_count=1i
     i2pd,url=http://localhost:7070,version=2.41.0,network_status=Firewalled,network_status_v6=disabled,statspage_status=available uptime=80086i,tunnel_creation_success_rate=66,in_bytes=98335457i,in_avg_bps=10321.92,out_bytes=87765811i,out_avg_bps=10321.92,transit_bytes=0i,transit_avg_bps=0.0,routers=1339i,floodfills=857i,leasesets=0i,clienttunnels=27i,transittunnels=0i
-
 
 ----
 
