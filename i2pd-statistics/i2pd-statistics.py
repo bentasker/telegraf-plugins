@@ -154,7 +154,7 @@ except:
                             )    
     
     lp = "{measurement},{tags} failed=1".format(
-                            measurement = I2PD_MEASUREMENT,
+                            measurement = MEASUREMENT,
                             tags = tags
                             )
     print(lp)    
@@ -291,15 +291,16 @@ fields = "{fields},outbound_tunnel_count={outbound_tunnels}i,outbound_tunnels_ex
                         outbound_tunnels_failed = outbound['failed']                     
                         )
 
-tags = "url={url},version={version},network_status={network_status},network_status_v6={network_status_v6}".format(
+tags = "url={url},version={version},network_status={network_status},network_status_v6={network_status_v6},statspage_status={stats_status}".format(
                         url = HOST,    
                         version = version,
                         network_status = network_status,
-                        network_status_v6 = network_status_v6
+                        network_status_v6 = network_status_v6,
+                        stats_status = stats_status
                         )
 
 lp = "{measurement},{tags} {fields}".format(
-                        measurement = I2PD_MEASUREMENT,
+                        measurement = MEASUREMENT,
                         tags = tags,
                         fields = fields
                         )
