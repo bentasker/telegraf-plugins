@@ -53,7 +53,7 @@ The plugin is also not currently coded particularly defensively - I wanted to ge
 * `url`: The URL used to reach the webconsole (basically, the value of `I2PD_CONSOLE`
 * `version`: The reported version of `i2pd`
 * `network_status`: The reported status of i2pd (values [here](https://github.com/PurpleI2P/i2pd/blob/openssl/daemon/HTTPServer.cpp#L223))
-* * `network_status_v6`: The reported status of i2pd for IPv6 (values [here](https://github.com/PurpleI2P/i2pd/blob/openssl/daemon/HTTPServer.cpp#L223))
+* `network_status_v6`: The reported status of i2pd for IPv6 (values [here](https://github.com/PurpleI2P/i2pd/blob/openssl/daemon/HTTPServer.cpp#L223))
 * `statspage_status`: The status of the page at `url`, one of `available`,`unavailable`
 
 
