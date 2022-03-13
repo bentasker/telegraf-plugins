@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 #
+# Gather statistics from I2PD
 #
+#
+# From https://github.com/bentasker/telegraf-plugins/tree/master/i2pd-statistics
 
 import os
 import re
