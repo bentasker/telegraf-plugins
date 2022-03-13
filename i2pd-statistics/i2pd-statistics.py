@@ -74,13 +74,13 @@ def extract_throughput(inp):
             unit = "MiB"
             volume = getMatches(inp, "([0-9,\.]+) GiB ")
     
-    # We _should_ now have a volume - it needs converting to KiB
+    # We _should_ now have a volume - it needs converting to bytes
     if unit == "KiB":
-        vol = float(volume[0])
-    elif unit == "MiB":
         vol = float(volume[0]) * 1024
-    elif unit == "GiB":
+    elif unit == "MiB":
         vol = (float(volume[0]) * 1024) * 1024
+    elif unit == "GiB":
+        vol = ((float(volume[0]) * 1024) * 1024) * 1024
     
     # Now we need to do the same to extract calculated throughput
     # that's always kibibits (https://github.com/PurpleI2P/i2pd/blob/openssl/daemon/HTTPServer.cpp#L289)
@@ -91,7 +91,9 @@ def extract_throughput(inp):
     # Convert to bit/s
     through = (float(throughp[0]) * 1024) * 8
     
-    return vol, through
+    # There's some float maths nastiness in I2PD - it claims to have sent fractions of bytes
+    # (and for that matter, bits). Round the value as a "good enough" indicator
+    return round(vol), through
     
 
 def extract_version(inp):
