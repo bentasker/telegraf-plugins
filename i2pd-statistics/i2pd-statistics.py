@@ -188,27 +188,36 @@ for line in bold_fields:
 # This is narsty.... 
 page_split = tunnels_page.split("<b>Outbound tunnels:</b>")
 
+# Prepare the dicts
 inbound = {
     "tunnels" : 0,
     "expiring" : 0,
     "established" : 0,
-    "exploring" : 0
+    "exploring" : 0,
+    "building" : 0,
+    "failed" : 0
     }
 
 outbound = {
     "tunnels" : 0,
     "expiring" : 0,
     "established" : 0,
-    "exploring" : 0
+    "exploring" : 0,
+    "building" : 0,
+    "failed" : 0    
     }
 
 
-
+# Status strings can be seen here https://github.com/PurpleI2P/i2pd/blob/openssl/daemon/HTTPServer.cpp#L134
 for line in page_split[0].split("\n"):
     if line.startswith('<div class="listitem">'):
         inbound['tunnels'] += 1            
         if "tunnel expiring" in line:
             inbound['expiring'] += 1
+        elif "tunnel building" in line:
+            inbound['building'] += 1
+        elif "tunnel failed" in line:
+            inbound['failed'] += 1
         elif "tunnel established" in line:
             inbound['established'] += 1
             if "(exploratory)" in line:
@@ -220,6 +229,10 @@ for line in page_split[1].split("\n"):
         outbound['tunnels'] += 1
         if "tunnel expiring" in line:
             outbound['expiring'] += 1
+        elif "tunnel building" in line:
+            outbound['building'] += 1
+        elif "tunnel failed" in line:
+            outbound['failed'] += 1
         elif "tunnel established" in line:
             outbound['established'] += 1
             if "(exploratory)" in line:
@@ -253,21 +266,25 @@ fields = "{fields},routers={routers}i,floodfills={floodfills}i,leasesets={leases
                         )
 
 
-fields = "{fields},inbound_tunnel_count={inbound_tunnels}i,inbound_tunnels_expiring={inbound_tunnels_expiring}i,inbound_tunnels_established={inbound_tunnels_established}i,inbound_tunnels_exploratory={inbound_tunnels_exploratory}i".format(
+fields = "{fields},inbound_tunnel_count={inbound_tunnels}i,inbound_tunnels_expiring={inbound_tunnels_expiring}i,inbound_tunnels_established={inbound_tunnels_established}i,inbound_tunnels_exploratory={inbound_tunnels_exploratory}i,inbound_tunnels_building={inbound_tunnels_building}i,inbound_tunnels_failed={inbound_tunnels_failed}i".format(
                         fields = fields,
                         inbound_tunnels = inbound['tunnels'],
                         inbound_tunnels_expiring = inbound['expiring'],
                         inbound_tunnels_established = inbound['established'],
-                        inbound_tunnels_exploratory = inbound['exploring']
+                        inbound_tunnels_exploratory = inbound['exploring'],
+                        inbound_tunnels_building = inbound['building'],
+                        inbound_tunnels_failed = inbound['failed']
                         )
 
 
-fields = "{fields},outbound_tunnel_count={outbound_tunnels}i,outbound_tunnels_expiring={outbound_tunnels_expiring}i,outbound_tunnels_established={outbound_tunnels_established}i,outbound_tunnels_exploratory={outbound_tunnels_exploratory}i".format(
+fields = "{fields},outbound_tunnel_count={outbound_tunnels}i,outbound_tunnels_expiring={outbound_tunnels_expiring}i,outbound_tunnels_established={outbound_tunnels_established}i,outbound_tunnels_exploratory={outbound_tunnels_exploratory}i,outbound_tunnels_building={outbound_tunnels_building}i,outbound_tunnels_failed={outbound_tunnels_failed}i".format(
                         fields = fields,
                         outbound_tunnels = outbound['tunnels'],
                         outbound_tunnels_expiring = outbound['expiring'],
                         outbound_tunnels_established = outbound['established'],
-                        outbound_tunnels_exploratory = outbound['exploring']
+                        outbound_tunnels_exploratory = outbound['exploring'],
+                        outbound_tunnels_building = outbound['building'],
+                        outbound_tunnels_failed = outbound['failed']                     
                         )
 
 tags = "url={url},version={version},network_status={network_status},network_status_v6={network_status_v6}".format(
