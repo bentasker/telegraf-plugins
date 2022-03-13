@@ -225,7 +225,7 @@ for line in page_split[0].split("\n"):
         elif "tunnel established" in line:
             inbound['established'] += 1
             if "(exploratory)" in line:
-                inbound['established'] += 1
+                inbound['exploring'] += 1
 
 
 for line in page_split[1].split("\n"):
@@ -240,7 +240,7 @@ for line in page_split[1].split("\n"):
         elif "tunnel established" in line:
             outbound['established'] += 1
             if "(exploratory)" in line:
-                outbound['established'] += 1
+                outbound['exploring'] += 1
 
 
 fields = "uptime={uptime}i,tunnel_creation_success_rate={success_rate},in_bytes={in_bytes}i,in_avg_bps={in_bps}".format(
