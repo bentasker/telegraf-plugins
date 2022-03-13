@@ -11,7 +11,7 @@ import requests
 import sys
 
 HOST = os.getenv('I2PD_CONSOLE', 'http://localhost:7070')
-MEASUREMENT = os.getenv('MEASUREMENT', 'i2pd')
+MEASUREMENT = os.getenv('I2PD_MEASUREMENT', 'i2pd')
 
 def getPage(path,host):
     
@@ -153,7 +153,7 @@ except:
                             )    
     
     lp = "{measurement},{tags} failed=1".format(
-                            measurement = MEASUREMENT,
+                            measurement = I2PD_MEASUREMENT,
                             tags = tags
                             )
     print(lp)    
@@ -298,7 +298,7 @@ tags = "url={url},version={version},network_status={network_status},network_stat
                         )
 
 lp = "{measurement},{tags} {fields}".format(
-                        measurement = MEASUREMENT,
+                        measurement = I2PD_MEASUREMENT,
                         tags = tags,
                         fields = fields
                         )
