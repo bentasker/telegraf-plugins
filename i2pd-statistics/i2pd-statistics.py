@@ -16,7 +16,7 @@ MEASUREMENT = os.getenv('I2PD_MEASUREMENT', 'i2pd')
 
 def getPage(path,host):
     
-    r = requests.get(f"{host}{path}")
+    r = requests.get("{}{}".format(host, path))
     return r.text
     
 
