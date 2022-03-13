@@ -2,6 +2,7 @@
 #
 # Gather statistics from I2PD
 #
+# Licensed under BSD3, see LICENSE for full license text
 #
 # From https://github.com/bentasker/telegraf-plugins/tree/master/i2pd-statistics
 
