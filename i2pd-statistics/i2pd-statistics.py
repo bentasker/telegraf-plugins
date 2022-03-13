@@ -5,6 +5,7 @@
 import os
 import re
 import requests
+import sys
 
 HOST = os.getenv('I2PD_CONSOLE', 'http://localhost:7070')
 MEASUREMENT = os.getenv('MEASUREMENT', 'i2pd')
@@ -131,11 +132,29 @@ def split_counter_row(inp):
     return routers, floodfills, leasesets, clienttunnels, transittunnels
 
 
+
+
+stats_status = "available"
+
 # We grab pages to begin with - we don't want too much delay between page reads
 # otherwise stats might diverge
-homepage = getPage("/", HOST)
-tunnels_page = getPage("/?page=tunnels", HOST)
-
+try:
+    homepage = getPage("/", HOST)
+    tunnels_page = getPage("/?page=tunnels", HOST)
+except:
+    stats_status = "unavailable"
+    
+    tags = "url={url},statspage_status={stats_status}".format(
+                            url = HOST,    
+                            stats_status = stats_status
+                            )    
+    
+    lp = "{measurement},{tags} failed=1".format(
+                            measurement = MEASUREMENT,
+                            tags = tags
+                            )
+    print(lp)    
+    sys.exit()
 
 
 bold_fields = getMatches(homepage, "<b>(.+)<br>")
