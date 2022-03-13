@@ -129,8 +129,11 @@ def split_counter_row(inp):
     return routers, floodfills, leasesets, clienttunnels, transittunnels
 
 
-homepage = getPage("/", HOST)    
-#print(homepage)
+# We grab pages to begin with - we don't want too much delay between page reads
+# otherwise stats might diverge
+homepage = getPage("/", HOST)
+tunnels_page = getPage("/?page=tunnels", HOST)
+
 
 
 bold_fields = getMatches(homepage, "<b>(.+)<br>")
@@ -160,12 +163,46 @@ for line in bold_fields:
     elif line.startswith("Client Tunnels:"):
         x, y, z, clienttunnels, transittunnels = split_counter_row(line)
         
-        
-        
-        
-        
-        
 
+# This is narsty.... 
+page_split = tunnels_page.split("<b>Outbound tunnels:</b>")
+
+inbound = {
+    "tunnels" : 0,
+    "expiring" : 0,
+    "established" : 0,
+    "exploring" : 0
+    }
+
+outbound = {
+    "tunnels" : 0,
+    "expiring" : 0,
+    "established" : 0,
+    "exploring" : 0
+    }
+
+
+
+for line in page_split[0].split("\n"):
+    if line.startswith('<div class="listitem">'):
+        inbound['tunnels'] += 1            
+        if "tunnel expiring" in line:
+            inbound['expiring'] += 1
+        elif "tunnel established" in line:
+            inbound['established'] += 1
+            if "(exploratory)" in line:
+                inbound['established'] += 1
+
+
+for line in page_split[1].split("\n"):
+    if line.startswith('<div class="listitem">'):
+        outbound['tunnels'] += 1
+        if "tunnel expiring" in line:
+            outbound['expiring'] += 1
+        elif "tunnel established" in line:
+            outbound['established'] += 1
+            if "(exploratory)" in line:
+                outbound['established'] += 1
 
 
 fields = "uptime={uptime}i,tunnel_creation_success_rate={success_rate},in_bytes={in_bytes}i,in_avg_bps={in_bps}".format(
@@ -192,7 +229,25 @@ fields = "{fields},routers={routers}i,floodfills={floodfills}i,leasesets={leases
                         leasesets = leasesets,
                         clienttunnels = clienttunnels,
                         transittunnels = transittunnels
-    )
+                        )
+
+
+fields = "{fields},inbound_tunnel_count={inbound_tunnels}i,inbound_tunnels_expiring={inbound_tunnels_expiring}i,inbound_tunnels_established={inbound_tunnels_established}i,inbound_tunnels_exploratory={inbound_tunnels_exploratory}i".format(
+                        fields = fields,
+                        inbound_tunnels = inbound['tunnels'],
+                        inbound_tunnels_expiring = inbound['expiring'],
+                        inbound_tunnels_established = inbound['established'],
+                        inbound_tunnels_exploratory = inbound['exploring']
+                        )
+
+
+fields = "{fields},outbound_tunnel_count={outbound_tunnels}i,outbound_tunnels_expiring={outbound_tunnels_expiring}i,outbound_tunnels_established={outbound_tunnels_established}i,outbound_tunnels_exploratory={outbound_tunnels_exploratory}i".format(
+                        fields = fields,
+                        outbound_tunnels = outbound['tunnels'],
+                        outbound_tunnels_expiring = outbound['expiring'],
+                        outbound_tunnels_established = outbound['established'],
+                        outbound_tunnels_exploratory = outbound['exploring']
+                        )
 
 tags = "url={url},version={version},network_status={network_status},network_status_v6={network_status_v6}".format(
                         url = HOST,    
