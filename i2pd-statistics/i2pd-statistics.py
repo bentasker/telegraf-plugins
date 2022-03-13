@@ -243,6 +243,9 @@ for line in page_split[1].split("\n"):
                 outbound['exploring'] += 1
 
 
+
+lp_buffer = []
+
 fields = "uptime={uptime}i,tunnel_creation_success_rate={success_rate},in_bytes={in_bytes}i,in_avg_bps={in_bps}".format(
                         uptime = uptime,
                         success_rate = creation_success,
@@ -269,27 +272,30 @@ fields = "{fields},routers={routers}i,floodfills={floodfills}i,leasesets={leases
                         transittunnels = transittunnels
                         )
 
-
-fields = "{fields},inbound_tunnel_count={inbound_tunnels}i,inbound_tunnels_expiring={inbound_tunnels_expiring}i,inbound_tunnels_established={inbound_tunnels_established}i,inbound_tunnels_exploratory={inbound_tunnels_exploratory}i,inbound_tunnels_building={inbound_tunnels_building}i,inbound_tunnels_failed={inbound_tunnels_failed}i".format(
-                        fields = fields,
-                        inbound_tunnels = inbound['tunnels'],
-                        inbound_tunnels_expiring = inbound['expiring'],
-                        inbound_tunnels_established = inbound['established'],
-                        inbound_tunnels_exploratory = inbound['exploring'],
-                        inbound_tunnels_building = inbound['building'],
-                        inbound_tunnels_failed = inbound['failed']
+for tun_state in inbound:
+    if tun_state == "tunnels":
+        continue
+    
+    lp = "{measurement},url={url},tunnel_state={state},direction=inbound tunnel_count={cnt}i".format(
+                        measurement = MEASUREMENT,
+                        url = HOST,
+                        state = tun_state,
+                        cnt = inbound[tun_state]
                         )
+    lp_buffer.append(lp)
 
-
-fields = "{fields},outbound_tunnel_count={outbound_tunnels}i,outbound_tunnels_expiring={outbound_tunnels_expiring}i,outbound_tunnels_established={outbound_tunnels_established}i,outbound_tunnels_exploratory={outbound_tunnels_exploratory}i,outbound_tunnels_building={outbound_tunnels_building}i,outbound_tunnels_failed={outbound_tunnels_failed}i".format(
-                        fields = fields,
-                        outbound_tunnels = outbound['tunnels'],
-                        outbound_tunnels_expiring = outbound['expiring'],
-                        outbound_tunnels_established = outbound['established'],
-                        outbound_tunnels_exploratory = outbound['exploring'],
-                        outbound_tunnels_building = outbound['building'],
-                        outbound_tunnels_failed = outbound['failed']                     
+for tun_state in outbound:
+    if tun_state == "tunnels":
+        continue
+    
+    lp = "{measurement},url={url},tunnel_state={state},direction=outbound tunnel_count={cnt}i".format(
+                        measurement = MEASUREMENT,
+                        url = HOST,
+                        state = tun_state,
+                        cnt = outbound[tun_state]
                         )
+    lp_buffer.append(lp)
+
 
 tags = "url={url},version={version},network_status={network_status},network_status_v6={network_status_v6},statspage_status={stats_status}".format(
                         url = HOST,    
@@ -305,4 +311,6 @@ lp = "{measurement},{tags} {fields}".format(
                         fields = fields
                         )
 
-print(lp)
+lp_buffer.append(lp)
+
+print('\n'.join(lp_buffer))

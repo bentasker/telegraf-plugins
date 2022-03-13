@@ -55,6 +55,8 @@ The plugin is also not currently coded particularly defensively - I wanted to ge
 * `network_status`: The reported status of i2pd (values [here](https://github.com/PurpleI2P/i2pd/blob/openssl/daemon/HTTPServer.cpp#L223))
 * `network_status_v6`: The reported status of i2pd for IPv6 (values [here](https://github.com/PurpleI2P/i2pd/blob/openssl/daemon/HTTPServer.cpp#L223))
 * `statspage_status`: The status of the page at `url`, one of `available`,`unavailable`
+* `tunnel_state`: Each of the possible tunnel states (see [here](https://github.com/PurpleI2P/i2pd/blob/openssl/daemon/HTTPServer.cpp#L134))
+* `direction`: tunnel direction, one of `inbound` or `outbound`
 
 
 **Fields**
@@ -70,16 +72,22 @@ The plugin is also not currently coded particularly defensively - I wanted to ge
 * `leasesets`: Number of LeaseSets
 * `clienttunnels`: Number of client tunnels
 * `transittunnels`: Number of Transit tunnels
-* `inbound_tunnel_count` / `outbound_tunnel_count`: Total number of tunnels
-* `inbound_tunnel_expiring` / `outbound_tunnel_expiring`: Total number of tunnels currently in an expiring state
-* `inbound_tunnel_established` / `outbound_tunnel_established`: Total number of tunnels currently in an established state
-* `inbound_tunnel_exploratory` / `outbound_tunnel_exploratory`: Total number of tunnels currently in an established but exploratory state
-* `inbound_tunnel_building` / `outbound_tunnel_building`: Total number of tunnels currently building
-* `inbound_tunnel_failed` / `outbound_tunnel_failed`: Total number of tunnels currently in an failed state
+* `tunnel_count`: Number of tunnels in `tunnel_state` for `direction`
 
 ### Example Line Protocol
 
-    i2pd,url=http://localhost:7070,version=2.41.0,network_status=Firewalled,network_status_v6=disabled uptime=73070i,tunnel_creation_success_rate=66,in_bytes=89758106i,in_avg_bps=10977.28,out_bytes=79964406i,out_avg_bps=10158.08,transit_bytes=0i,transit_avg_bps=0.0,routers=1294i,floodfills=814i,leasesets=0i,clienttunnels=32i,transittunnels=0i,inbound_tunnel_count=16i,inbound_tunnels_expiring=4i,inbound_tunnels_established=16i,inbound_tunnels_exploratory=0i,inbound_tunnels_building=0i,inbound_tunnels_failed=0i,outbound_tunnel_count=16i,outbound_tunnels_expiring=4i,outbound_tunnels_established=15i,outbound_tunnels_exploratory=0i,outbound_tunnels_building=0i,outbound_tunnels_failed=0i
+    i2pd,url=http://localhost:7070,tunnel_state=expiring,direction=inbound tunnel_count=1i
+    i2pd,url=http://localhost:7070,tunnel_state=established,direction=inbound tunnel_count=11i
+    i2pd,url=http://localhost:7070,tunnel_state=exploring,direction=inbound tunnel_count=3i
+    i2pd,url=http://localhost:7070,tunnel_state=building,direction=inbound tunnel_count=0i
+    i2pd,url=http://localhost:7070,tunnel_state=failed,direction=inbound tunnel_count=1i
+    i2pd,url=http://localhost:7070,tunnel_state=expiring,direction=outbound tunnel_count=3i
+    i2pd,url=http://localhost:7070,tunnel_state=established,direction=outbound tunnel_count=10i
+    i2pd,url=http://localhost:7070,tunnel_state=exploring,direction=outbound tunnel_count=1i
+    i2pd,url=http://localhost:7070,tunnel_state=building,direction=outbound tunnel_count=0i
+    i2pd,url=http://localhost:7070,tunnel_state=failed,direction=outbound tunnel_count=1i
+    i2pd,url=http://localhost:7070,version=2.41.0,network_status=Firewalled,network_status_v6=disabled,statspage_status=available uptime=80086i,tunnel_creation_success_rate=66,in_bytes=98335457i,in_avg_bps=10321.92,out_bytes=87765811i,out_avg_bps=10321.92,transit_bytes=0i,transit_avg_bps=0.0,routers=1339i,floodfills=857i,leasesets=0i,clienttunnels=27i,transittunnels=0i
+
 
 ----
 
