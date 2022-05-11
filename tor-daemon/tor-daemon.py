@@ -140,7 +140,7 @@ res = send_and_respond(s, cmd)
 if len(res) < 1 or res[0] != "250 OK":
     # Login failed
     state["stats_failures"] += 1
-    print(state)
+    print(build_lp(MEASUREMENT, state))
     sys.exit(1)
 
 
