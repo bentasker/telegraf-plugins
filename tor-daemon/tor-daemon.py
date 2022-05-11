@@ -16,7 +16,7 @@ stats = [
     ["version", "tor_version", "string", "field"],
     ["dormant", "dormant", "int", "field"],
     ["status/reachability-succeeded/or", "orport_reachability", "int", "field"],
-    ["status/reachability-succeeded/dr", "dirport_reachability", "int", "field"],
+    ["status/reachability-succeeded/dir", "dirport_reachability", "int", "field"],
     
     ["status/version/current", "version_status", "string", "tag"],
     ["network-liveness", "network_liveness", "string", "tag"]
