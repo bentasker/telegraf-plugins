@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
+import os
 import socket
 import sys
 
-CONTROL_H = "127.0.0.1"
-CONTROL_P = 9051
-AUTH = "MySecretPass"
-MEASUREMENT="tor"
+CONTROL_H = os.getenv("CONTROL_HOST", "127.0.0.1")
+CONTROL_P = int(os.getenv("CONTROL_PORT", 9051))
+AUTH = os.getenv("CONTROL_AUTH", "MySecretPass")
+MEASUREMENT = os.getenv("MEASUREMENT", "tor")
 
 # stats to collect
 stats = [
