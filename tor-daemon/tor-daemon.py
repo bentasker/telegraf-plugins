@@ -89,7 +89,7 @@ def build_lp(measurement_name, state):
     
     for entry in state["stats"]:
         if entry['fieldtype'] == "tag":
-            v = entry['name'] + "=" + entry["value"]
+            v = entry['name'] + "=" + entry["value"].replace(" ","\ ")
             lead.append(v)
         else:
             # It's a field
