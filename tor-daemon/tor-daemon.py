@@ -46,6 +46,36 @@ def send_and_respond(sock, command):
     return ''.join(res).split('\r\n')
 
 
+def get_guard_counts(s):
+    ''' Get guard info and build a set of counters
+    
+    '''
+    res = send_and_respond(s, "GETINFO entry-guards")
+    
+    if len(res) < 1 or not res[0].startswith("250+"):
+        print("failed to get guard info")
+    else:
+        # Strip the response code and trailers
+        counters = {
+            "never-connected" : 0,
+            "down" : 0,
+            "up" : 0,
+            "unusable" : 0,
+            "unlisted" : 0,
+            "total" : 0
+            }
+        
+        for line in res[0:-2]:
+            s = line.split(" ")
+            if len(s) < 2:
+                continue
+            
+            counters[s[1]] += 1
+            counters["total"] += 1
+    
+    return counters
+    
+    
 def build_lp(measurement_name, state):
     ''' Build a Line Protocol response
     '''
@@ -70,6 +100,22 @@ def build_lp(measurement_name, state):
                 v = entry['name'] + '="' + entry["value"] + '"'
             fields.append(v)
             
+            
+    # Process counters - these are always ints
+    for counter in state["counters"]:
+        # First list element is a category for the counters
+        # e.g. guards
+        prefix = counter[0] + "_"
+        for nm in counter[1]:
+            # Take the name and prepend the prefix, gives us
+            # something like
+            # guards_down
+            fname = prefix + nm.replace("-","_")
+            
+            # Add the value
+            v = fname + "=" + str(counter[1][nm]) + "i"
+            fields.append(v)
+    
     l = ",".join(lead)
     f = ",".join(fields)
     return " ".join([l, f])
@@ -77,7 +123,8 @@ def build_lp(measurement_name, state):
     
 state = {
     "conn_status" : "failed",
-    "stats" : []
+    "stats" : [],
+    "counters" : []
 }
     
 # Initialise a connection
@@ -116,6 +163,8 @@ for stat in stats:
         "fieldtype" : stat[3]
     })
     
-    
-print(state)
+
+state["counters"].append(["guards", get_guard_counts(s)])
+
+#print(state)
 print(build_lp(MEASUREMENT, state))
