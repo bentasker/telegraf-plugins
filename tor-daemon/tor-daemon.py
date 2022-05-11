@@ -116,6 +116,12 @@ def build_lp(measurement_name, state):
             v = fname + "=" + str(counter[1][nm]) + "i"
             fields.append(v)
     
+    # Append any tags that have been pushed into the main state object
+    for tag in state["tags"]:
+        v = tag[0] + "=" + tag[1]
+        lead.append(v)
+        
+    
     l = ",".join(lead)
     f = ",".join(fields)
     return " ".join([l, f])
@@ -125,7 +131,8 @@ state = {
     "conn_status" : "failed",
     "stats_failures" : 0,
     "stats" : [],
-    "counters" : []
+    "counters" : [],
+    "tags" : [] # used to track failures etc
 }
     
 # Initialise a connection
@@ -135,6 +142,7 @@ try:
     s.setblocking(0)
 except:
     state["stats_failures"] += 1
+    state["tags"].append(["failure_type", "connection"])
     print(build_lp(MEASUREMENT, state))
     sys.exit(1)
    
@@ -145,6 +153,7 @@ res = send_and_respond(s, cmd)
 if len(res) < 1 or res[0] != "250 OK":
     # Login failed
     state["stats_failures"] += 1
+    state["tags"].append(["failure_type", "authentication"])
     print(build_lp(MEASUREMENT, state))
     sys.exit(1)
 
