@@ -84,7 +84,7 @@ def build_lp(measurement_name, state):
     fields = []
     
     lead.append("controlport_connection=" + state['conn_status'])
-    
+    fields.append("stats_fetch_failures=" + str(state["stats_failures"]) + "i")
     
     for entry in state["stats"]:
         if entry['fieldtype'] == "tag":
@@ -123,6 +123,7 @@ def build_lp(measurement_name, state):
     
 state = {
     "conn_status" : "failed",
+    "stats_failures" : 0,
     "stats" : [],
     "counters" : []
 }
@@ -138,6 +139,7 @@ cmd = 'AUTHENTICATE "' + AUTH + '"'
 res = send_and_respond(s, cmd)       
 if len(res) < 1 or res[0] != "250 OK":
     # Login failed
+    state["stats_failures"] += 1
     print(state)
     sys.exit(1)
 
@@ -150,7 +152,7 @@ for stat in stats:
     cmd = "GETINFO " + stat[0]
     res = send_and_respond(s, cmd)
     if len(res) < 1 or not res[0].startswith("250-"):
-        print("Failed to get stat " + stat[0])
+        state["stats_failures"] += 1
         continue
     
     # Otherwise push to the stats list
