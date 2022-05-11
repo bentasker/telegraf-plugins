@@ -12,7 +12,7 @@ MEASUREMENT = os.getenv("MEASUREMENT", "tor")
 stats = [
     #cmd, output_name, type, tag/field
     ["traffic/read", "bytes_rx", "int", "field"],
-    ["traffic/written", "bytes_rx", "int", "field"],
+    ["traffic/written", "bytes_tx", "int", "field"],
     ["uptime", "uptime", "int", "field"],
     ["version", "tor_version", "string", "field"],
     ["dormant", "dormant", "int", "field"],
