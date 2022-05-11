@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+#
+# Telegraf Exec plugin to monitor the tor daemon
+#
+# Copyright (c) 2022 B Tasker
+# Released under GNU GPL v3 - https://www.gnu.org/licenses/gpl-3.0.txt
+#
+#
+
 import os
 import socket
 import sys
