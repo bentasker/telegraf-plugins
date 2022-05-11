@@ -129,10 +129,15 @@ state = {
 }
     
 # Initialise a connection
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect((CONTROL_H, int(CONTROL_P)))
-s.setblocking(0)
-
+try:
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((CONTROL_H, int(CONTROL_P)))
+    s.setblocking(0)
+except:
+    state["stats_failures"] += 1
+    print(build_lp(MEASUREMENT, state))
+    sys.exit(1)
+   
 
 # Login
 cmd = 'AUTHENTICATE "' + AUTH + '"'
