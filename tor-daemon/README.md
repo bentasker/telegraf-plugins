@@ -60,7 +60,7 @@ Restart telegraf
 The plugin creates the following tags
 
 - `controlport_connection`: did we manage to use the controlport? success/failed
-- `network_liveness`: [tor's assessmnet](https://github.com/torproject/torspec/blob/main/control-spec.txt#L1127) of whether there's network connectivity. up/down
+- `network_liveness`: [tor's assessment](https://github.com/torproject/torspec/blob/main/control-spec.txt#L1127) of whether there's network connectivity. up/down
 - `version_status`: [tor's assessment](https://github.com/torproject/torspec/blob/main/control-spec.txt#L988) of the currently running tor verion. new,old,unrecommended,recommended,new in series,obsolete,unknown
 
 ----
