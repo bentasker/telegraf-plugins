@@ -62,11 +62,21 @@ The plugin creates the following tags
 - `controlport_connection`: did we manage to use the controlport? success/failed
 - `network_liveness`: [tor's assessment](https://github.com/torproject/torspec/blob/main/control-spec.txt#L1127) of whether there's network connectivity. up/down
 - `version_status`: [tor's assessment](https://github.com/torproject/torspec/blob/main/control-spec.txt#L988) of the currently running tor verion. new,old,unrecommended,recommended,new in series,obsolete,unknown
+- `accounting_enabled`: Is accounting enabled
+- `accounting_hibernating_state`: (only present if accounting enabled). One of `awake`,`hard`,`soft`
+
 
 ----
 
 ### Fields
 
+- `accounting_bytes_read`: number of bytes read/received in this accounting period
+- `accounting_bytes_write`: number of bytes written/sent in this accounting period
+- `accounting_bytes_remaining_read`: number of bytes left to be read/received in this accounting period
+- `accounting_bytes_remaining_write`: number of bytes left to be written/sent in this accounting period
+- `accounting_period_length`: Length in seconds of the accounting period
+- `accounting_period_seconds_elapsed`: seconds elapsed since the start of the current accounting period
+- `accounting_period_seconds_remaining`: seconds remaining in the current accounting period
 - `bytes_rx`: bytes received since last daemon restart
 - `bytes_tx`: bytes transmitted since last daemon restart
 - `dirport_reachability`: 1/0 - [Tor's assessment](https://github.com/torproject/torspec/blob/main/control-spec.txt#L972) of dirport reachibility
@@ -81,6 +91,7 @@ The plugin creates the following tags
 - `stats_fetch_failures`: How many stats did the plugin fail to fetch?
 - `tor_version`: current tor version string
 - `uptime`: seconds since last daemon restart
+
 
 
 ----

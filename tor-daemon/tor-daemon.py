@@ -7,6 +7,7 @@
 #
 #
 
+import datetime
 import os
 import socket
 import sys
@@ -84,6 +85,134 @@ def get_guard_counts(s):
     
     return counters
     
+def get_accounting_info(s):
+    
+    byte_fields = [
+        ["accounting/bytes", "accounting_bytes", "int", "field"],
+        ["accounting/bytes-left", "accounting_bytes_remaining", "int", "field"],
+    ]
+    
+    vals = []    
+    
+    accounting = { 
+        "name" : "accounting_enabled",
+        "type" : "string",
+        "value" : "0",
+        "fieldtype" : "tag"
+        }
+    
+    res = send_and_respond(s, "GETINFO accounting/enabled")
+    if len(res) < 1 or not res[0].startswith("250-"):
+        return vals
+    
+    v = int(res[0].split("=")[1])
+    if v == 0:
+        vals.append(accounting)
+        return vals
+    
+    
+    # Accounting is active
+    accounting['value'] = "1"
+    vals.append(accounting)
+    
+    # Current relay state
+    res = send_and_respond(s, "GETINFO accounting/hibernating")
+    if len(res) > 1 and res[0].startswith("250-"):
+            val = res[0].split("=")[1]
+            vals.append({
+                    "name" : "accounting_hibernating_state",
+                    "type" : "string",
+                    "value" : val,
+                    "fieldtype" : "tag"
+                })
+    
+    # bytes
+    for f in byte_fields:
+        res = send_and_respond(s, "GETINFO " + f[0])
+        if len(res) > 1 and res[0].startswith("250-"):
+            val = res[0].split("=")[1]
+            # There's a read and a write value
+            cols = val.split(" ")
+            
+            vals.append({
+                    "name" : f[1] + "_read",
+                    "type" : f[2],
+                    "value" : int(cols[0]),
+                    "fieldtype" : f[3]
+                })
+            
+            vals.append({
+                    "name" : f[1] + "_write",
+                    "type" : f[2],
+                    "value" : int(cols[1]),
+                    "fieldtype" : f[3]
+                })
+            
+
+    # Calculate durations
+    #
+    # We get values like 
+    #
+    # 2022-05-04 12:31:00
+    #
+    # We want to convert these into durations
+    #
+    # How much of the accounting interval is left? how much has elapsed etc
+
+    # strptime pattern to use when parsing tor's date responses
+    timepattern = "%Y-%m-%d %H:%M:%S"
+    
+    # For some reason, tor uses rfc3339 for the current time, but not for
+    # accounting times.
+    nowtimepattern = "%Y-%m-%dT%H:%M:%S"
+
+    # Ask Tor what time it thinks it currently is
+    res = send_and_respond(s, "GETINFO current-time/utc")
+    if len(res) > 1 and res[0].startswith("250-"):
+        val = res[0].split("=")[1]
+        now = datetime.datetime.strptime(val, nowtimepattern)
+    
+    # Now ask when the accounting period started
+    res = send_and_respond(s, "GETINFO accounting/interval-start")
+    if len(res) > 1 and res[0].startswith("250-"):
+        val = res[0].split("=")[1]
+        acc_start = datetime.datetime.strptime(val, timepattern)
+        
+        # subtract from now
+        delta = now - acc_start
+        vals.append({
+            "name" : "accounting_period_seconds_elapsed",
+            "type" : "int",
+            "value" : int(delta.total_seconds()),
+            "fieldtype" : "field"            
+            })
+        
+    # When does the accounting period end?
+    res = send_and_respond(s, "GETINFO accounting/interval-end")
+    if len(res) > 1 and res[0].startswith("250-"):
+        val = res[0].split("=")[1]
+        acc_stop = datetime.datetime.strptime(val, timepattern)
+        
+        # subtract now
+        delta = acc_stop - now
+        vals.append({
+            "name" : "accounting_period_seconds_remaining",
+            "type" : "int",
+            "value" : int(delta.total_seconds()),
+            "fieldtype" : "field"            
+            })
+            
+            
+    # Calculate length of the accounting period
+    delta = acc_stop - acc_start
+    vals.append({
+        "name" : "accounting_period_length",
+        "type" : "int",
+        "value" : int(delta.total_seconds()),
+        "fieldtype" : "field"            
+        })    
+    return vals
+
     
 def build_lp(measurement_name, state):
     ''' Build a Line Protocol response
@@ -102,7 +231,7 @@ def build_lp(measurement_name, state):
         else:
             # It's a field
             if entry['type'] == "int":
-                v = entry['name'] + "=" + entry["value"] + "i"
+                v = entry['name'] + "=" + str(entry["value"]) + "i"
             elif entry['type'] == "float":
                 v = entry['name'] + "=" + entry["value"]
             else:
@@ -190,6 +319,10 @@ for stat in stats:
     
 
 state["counters"].append(["guards", get_guard_counts(s)])
+
+# Get accounting info
+for v in get_accounting_info(s):
+    state["stats"].append(v)
 
 #print(state)
 print(build_lp(MEASUREMENT, state))
