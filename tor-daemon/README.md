@@ -4,6 +4,8 @@ An `exec` plugin that connects to the Tor Daemon's [control port](https://github
 
 Design and tracking is under [utilities/telegraf-plugins#1](https://projects.bentasker.co.uk/gils_projects/issue/utilities/telegraf-plugins/1.html)
 
+An example of using it can be [found on my site](https://www.bentasker.co.uk/posts/documentation/general/monitoring-tor-daemon-with-telegraf.html).
+
 ----
 
 ### Tor Setup
