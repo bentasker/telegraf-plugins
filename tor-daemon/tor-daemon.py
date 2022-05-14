@@ -84,7 +84,125 @@ def get_guard_counts(s):
             counters["total"] += 1
     
     return counters
+
+
+def get_exit_policy_stats(s):
+    ''' Get exit policies (if set) and generate stats based on them
     
+    Returns a list of statistics
+    
+    utilities/telegraf-plugins#4
+    '''
+    
+    stats = []
+    is_relay = {
+        "name" : "server_mode_enabled",
+        "type" : "string",
+        "value" : "1",
+        "fieldtype" : "tag"
+        }
+    
+    # Fetch the ipv4 policy
+    res = send_and_respond(s, "GETINFO exit-policy/ipv4")
+    if len(res) < 1 or not res[0].startswith("250-"):
+        # We're not a relay
+        is_relay["value"] = "0"
+        stats.append(is_relay)
+        return stats
+    
+    
+    # We have exit policies of some form
+    stats.append(is_relay)
+    
+    val = res[0].split("=")[1]
+    ipv4_stats = process_exit_policy(val)
+    
+    for stat in ipv4_stats:
+        p = {
+            "name" : "ipv4_exit_policy_num_" + stat,
+            "type" : "int",
+            "value" : ipv4_stats[stat],
+            "fieldtype" : "field"
+            }
+        stats.append(p)
+        
+    # Now do the same for ipv6 policies
+    res = send_and_respond(s, "GETINFO exit-policy/ipv6")
+    if len(res) < 1 or not res[0].startswith("250-"):
+        # can't proceed, so return what we've got
+        return stats
+    
+    val = res[0].split("=")[1]
+    ipv6_stats = process_exit_policy(val)
+    for stat in ipv6_stats:
+        p = {
+            "name" : "ipv6_exit_policy_num_" + stat,
+            "type" : "int",
+            "value" : ipv6_stats[stat],
+            "fieldtype" : "field"
+            }
+        stats.append(p)
+    
+    return stats
+    
+    
+def process_exit_policy(policy_line):
+    ''' Take a policy response line and derive stats from it
+    
+    Returns a counters dict
+    
+    utilities/telegraf-plugins#4
+    '''
+    
+    # The policies are comma delimited
+    policies = policy_line.split(",")
+    counters = {
+        "total" : len(policies),
+        "accept" : 0,
+        "reject" : 0,
+        "wildcard" : 0,
+        "specific" : 0,
+        "unique_hosts" : 0,
+        "unique_ports" : 0,
+        "wildcard_port" : 0,
+        "specific_port" : 0
+        }
+    
+    hosts = []
+    ports = []
+    
+    # iterate over the policies and update counters
+    for policy in policies:
+        parts = policy.split(" ")
+        if parts[0].startswith("accept"):
+            counters["accept"] += 1
+        else:
+            counters["reject"] += 1
+            
+        if parts[1].startswith("*"):
+            counters["wildcard"] += 1
+        elif parts[1].startswith("1") or parts[1].startswith("2"):
+            counters["specific"] += 1
+            
+            # ipv6 complicates this a touch
+            ip = ":".join(parts[1].split(":")[0:-1])
+            hosts.append(ip)
+
+        port = parts[1].split(":")[-1]
+        ports.append(port)
+        
+        if port == "*":
+            counters['wildcard_port'] += 1
+        else:
+            counters['specific_port'] += 1
+    
+    # Calculate the unique counts
+    counters["unique_hosts"] = len(set(hosts))
+    counters["unique_ports"] = len(set(ports))
+    
+    return counters
+    
+
 def get_accounting_info(s):
     
     byte_fields = [
@@ -322,6 +440,11 @@ state["counters"].append(["guards", get_guard_counts(s)])
 
 # Get accounting info
 for v in get_accounting_info(s):
+    state["stats"].append(v)
+
+
+# Get exit policy info
+for v in get_exit_policy_stats(s):
     state["stats"].append(v)
 
 #print(state)

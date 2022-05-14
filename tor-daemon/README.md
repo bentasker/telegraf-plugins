@@ -94,6 +94,26 @@ The plugin creates the following tags
 - `tor_version`: current tor version string
 - `uptime`: seconds since last daemon restart
 
+For relays/exit nodes:
+
+- `ipv4_exit_policy_num_total`: Total number of exit policies
+- `ipv4_exit_policy_num_accept`: Total number of accept exit policies 
+- `ipv4_exit_policy_num_reject`: Total number of reject exit policies 
+- `ipv4_exit_policy_num_wildcard`: Total number of policies that use a `*` for host
+- `ipv4_exit_policy_num_specific`: Total number of exit policies that refer to a specific host
+- `ipv4_exit_policy_num_unique_hosts`: Number of unique hosts in exit policies
+- `ipv4_exit_policy_num_unique_ports`: Number of unique ports in exit policies
+- `ipv4_exit_policy_num_wildcard_port`: Number of policies with wildcarded ports
+- `ipv4_exit_policy_num_specific_port`: Number of policies mentioning specific port
+- `ipv6_exit_policy_num_total`: Total number of exit policies
+- `ipv6_exit_policy_num_accept`: Total number of accept exit policies 
+- `ipv6_exit_policy_num_reject`: Total number of reject exit policies 
+- `ipv6_exit_policy_num_wildcard`: Total number of policies that use a `*` for host
+- `ipv6_exit_policy_num_specific`: Total number of exit policies that refer to a specific host
+- `ipv6_exit_policy_num_unique_hosts`: Number of unique hosts in exit policies
+- `ipv6_exit_policy_num_unique_ports`: Number of unique ports in exit policies
+- `ipv6_exit_policy_num_wildcard_port`: Number of policies with wildcarded ports
+- `ipv6_exit_policy_num_specific_port`: Number of policies mentioning specific port
 
 
 ----
