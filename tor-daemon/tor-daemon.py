@@ -64,6 +64,7 @@ def get_guard_counts(s):
     
     if len(res) < 1 or not res[0].startswith("250+"):
         print("failed to get guard info")
+        return {}
     else:
         # Strip the response code and trailers
         counters = {
