@@ -166,7 +166,8 @@ def process_exit_policy(policy_line):
         "unique_hosts" : 0,
         "unique_ports" : 0,
         "wildcard_port" : 0,
-        "specific_port" : 0
+        "specific_port" : 0,
+        "port_range": 0,
         }
     
     hosts = []
@@ -190,12 +191,22 @@ def process_exit_policy(policy_line):
             hosts.append(ip)
 
         port = parts[1].split(":")[-1]
-        ports.append(port)
         
-        if port == "*":
-            counters['wildcard_port'] += 1
+        if "-" in port:
+            # It's a range
+            counters["port_range"] += 1
+            port_parts = [ int(x) for x in port.split("-") ]
+            while port[0] <= port[1]:
+                ports.append(port[0])
+                counters['specific_port'] += 1
+                port[0] += 1
+                
         else:
-            counters['specific_port'] += 1
+            ports.append(port)
+            if port == "*":
+                counters['wildcard_port'] += 1
+            else:
+                counters['specific_port'] += 1
     
     # Calculate the unique counts
     counters["unique_hosts"] = len(set(hosts))
