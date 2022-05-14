@@ -186,11 +186,29 @@ def process_exit_policy(policy_lines):
         "wildcard_port" : 0,
         "specific_port" : 0,
         "port_range": 0,
+        
+ 
+        # Policy specific counters
+        "wildcard_accept" : 0,
+        "specific_accept" : 0,
+        "wildcard_port_accept" : 0,
+        "specific_port_accept" : 0,
+        
+        
+        "wildcard_reject" : 0,
+        "specific_reject" : 0,
+        "wildcard_port_reject" : 0,
+        "specific_port_reject" : 0,
+        
         }
     
     hosts = []
     ports = []
-
+    
+    counts = {
+        "accept" : {"hosts" : [], "ports" : []},
+        "reject" : {"hosts" : [], "ports" : []}
+        }
     
     for policy_line in lines:
         if len(policy_line) == 0:
@@ -204,39 +222,57 @@ def process_exit_policy(policy_lines):
             parts = policy.split(" ")
             if parts[0].startswith("accept"):
                 counters["accept"] += 1
+                mode = "accept"
             else:
                 counters["reject"] += 1
+                mode = "reject"
                 
             if parts[1].startswith("*"):
                 counters["wildcard"] += 1
+                counters["wildcard_" + mode] += 1
             elif parts[1].startswith("1") or parts[1].startswith("2"):
                 counters["specific"] += 1
+                counters["specific_" + mode] += 1
                 
                 # ipv6 complicates this a touch
                 ip = ":".join(parts[1].split(":")[0:-1])
                 hosts.append(ip)
+                counts[mode]["hosts"].append(ip)
 
             port = parts[1].split(":")[-1]
             
             if "-" in port:
-                # It's a range
+                # It's a range, iterate over it
                 counters["port_range"] += 1
                 port_parts = [ int(x) for x in port.split("-") ]
                 while port_parts[0] <= port_parts[1]:
                     ports.append(port_parts[0])
+                    counts[mode]["ports"].append(port_parts[0])
                     counters['specific_port'] += 1
+                    counters["specific_port_" + mode] += 1
                     port_parts[0] += 1
                     
             else:
+                # Singluar port (or wildcard)
                 ports.append(port)
+                counts[mode]["ports"].append(port)
                 if port == "*":
                     counters['wildcard_port'] += 1
+                    counters["wildcard_port_" + mode] += 1
                 else:
                     counters['specific_port'] += 1
+                    counters["specific_port_" + mode] += 1
         
     # Calculate the unique counts
     counters["unique_hosts"] = len(set(hosts))
     counters["unique_ports"] = len(set(ports))
+
+    counters["unique_hosts_accept"] = len(set(counts["accept"]["hosts"]))
+    counters["unique_ports_accept"] = len(set(counts["accept"]["ports"]))
+    counters["unique_hosts_reject"] = len(set(counts["accept"]["hosts"]))
+    counters["unique_ports_reject"] = len(set(counts["accept"]["ports"]))
+
+
     
     return counters
     

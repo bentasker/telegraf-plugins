@@ -104,7 +104,20 @@ For relays/exit nodes:
 - `ipv4_exit_policy_num_unique_hosts`: Number of unique hosts in exit policies
 - `ipv4_exit_policy_num_unique_ports`: Number of unique ports in exit policies
 - `ipv4_exit_policy_num_wildcard_port`: Number of policies with wildcarded ports
-- `ipv4_exit_policy_num_specific_port`: Number of policies mentioning specific port
+- `ipv4_exit_policy_num_specific_port`: Number of policies mentioning specific ports
+- `ipv4_exit_policy_num_port_range`: Number of policies specifying a range of ports
+- `ipv4_wildcard_accept` : How many accept policies use wildcards
+- `ipv4_specific_accept` : How many accept policies specify specific hosts/networks
+- `ipv4_wildcard_port_accept` : How many accept policies use wildcard for ports
+- `ipv4_specific_port_accept`: How many accept policies specify specific ports
+- `ipv4_unique_hosts_accept` : Number of unique hosts in accept policies
+- `ipv4_unique_ports_accept` : Number of unique hosts in accept policies
+- `ipv4_wildcard_reject` : How many reject policies use wildcards
+- `ipv4_specific_reject` : How many reject policies specify specific hosts/networks
+- `ipv4_wildcard_port_reject` : How many reject policies use wildcard for ports
+- `ipv4_specific_port_reject`: How many reject policies specify specific ports
+- `ipv4_unique_hosts_reject` : Number of unique hosts in reject policies
+- `ipv4_unique_ports_reject` : Number of unique hosts in reject policies
 - `ipv6_exit_policy_num_total`: Total number of exit policies
 - `ipv6_exit_policy_num_accept`: Total number of accept exit policies 
 - `ipv6_exit_policy_num_reject`: Total number of reject exit policies 
@@ -114,6 +127,19 @@ For relays/exit nodes:
 - `ipv6_exit_policy_num_unique_ports`: Number of unique ports in exit policies
 - `ipv6_exit_policy_num_wildcard_port`: Number of policies with wildcarded ports
 - `ipv6_exit_policy_num_specific_port`: Number of policies mentioning specific port
+- `ipv6_exit_policy_num_port_range`: Number of policies specifying a range of ports
+- `ipv6_wildcard_accept` : How many accept policies use wildcards
+- `ipv6_specific_accept` : How many accept policies specify specific hosts/networks
+- `ipv6_wildcard_port_accept` : How many accept policies use wildcard for ports
+- `ipv6_specific_port_accept`: How many accept policies specify specific ports
+- `ipv6_unique_hosts_accept` : Number of unique hosts in accept policies
+- `ipv6_unique_ports_accept` : Number of unique hosts in accept policies
+- `ipv6_wildcard_reject` : How many reject policies use wildcards
+- `ipv6_specific_reject` : How many reject policies specify specific hosts/networks
+- `ipv6_wildcard_port_reject` : How many reject policies use wildcard for ports
+- `ipv6_specific_port_reject`: How many reject policies specify specific ports
+- `ipv6_unique_hosts_reject` : Number of unique hosts in reject policies
+- `ipv6_unique_ports_reject` : Number of unique hosts in reject policies
 
 
 ----
