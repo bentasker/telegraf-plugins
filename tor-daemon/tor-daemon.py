@@ -105,7 +105,7 @@ def get_exit_policy_stats(s):
     
     # Fetch the ipv4 policy
     res = send_and_respond(s, "GETINFO exit-policy/ipv4")
-    if len(res) < 1 or not res[0].startswith("250-"):
+    if len(res) < 1 or not res[0].startswith("250"):
         # We're not a relay
         is_relay["value"] = "0"
         stats.append(is_relay)
@@ -115,8 +115,7 @@ def get_exit_policy_stats(s):
     # We have exit policies of some form
     stats.append(is_relay)
     
-    val = res[0].split("=")[1]
-    ipv4_stats = process_exit_policy(val)
+    ipv4_stats = process_exit_policy(res)
     
     for stat in ipv4_stats:
         p = {
@@ -129,12 +128,12 @@ def get_exit_policy_stats(s):
         
     # Now do the same for ipv6 policies
     res = send_and_respond(s, "GETINFO exit-policy/ipv6")
-    if len(res) < 1 or not res[0].startswith("250-"):
+    if len(res) < 1 or not res[0].startswith("250"):
         # can't proceed, so return what we've got
         return stats
     
-    val = res[0].split("=")[1]
-    ipv6_stats = process_exit_policy(val)
+    
+    ipv6_stats = process_exit_policy(res)
     for stat in ipv6_stats:
         p = {
             "name" : "ipv6_exit_policy_num_" + stat,
@@ -147,7 +146,7 @@ def get_exit_policy_stats(s):
     return stats
     
     
-def process_exit_policy(policy_line):
+def process_exit_policy(policy_lines):
     ''' Take a policy response line and derive stats from it
     
     Returns a counters dict
@@ -155,10 +154,29 @@ def process_exit_policy(policy_line):
     utilities/telegraf-plugins#4
     '''
     
-    # The policies are comma delimited
-    policies = policy_line.split(",")
+    
+    # The result that comes back will vary, sometimes it's single-line
+    # sometimes it's multiline
+    lines = []
+    if policy_lines[0].startswith("250+"):
+        # multi-line
+        for line in policy_lines:
+            if line in [".", "250 OK"]:
+                break
+            if "=" in line:
+                # First line
+                lines.append(line.split("=")[1])
+            else:
+                # subsequent lines
+                lines.append(line)
+    else:
+        # single line
+        lines.append(policy_lines[0].split("=")[1])
+    
+    
+    # Set up the counters
     counters = {
-        "total" : len(policies),
+        "total" : 0,
         "accept" : 0,
         "reject" : 0,
         "wildcard" : 0,
@@ -172,42 +190,50 @@ def process_exit_policy(policy_line):
     
     hosts = []
     ports = []
-    
-    # iterate over the policies and update counters
-    for policy in policies:
-        parts = policy.split(" ")
-        if parts[0].startswith("accept"):
-            counters["accept"] += 1
-        else:
-            counters["reject"] += 1
-            
-        if parts[1].startswith("*"):
-            counters["wildcard"] += 1
-        elif parts[1].startswith("1") or parts[1].startswith("2"):
-            counters["specific"] += 1
-            
-            # ipv6 complicates this a touch
-            ip = ":".join(parts[1].split(":")[0:-1])
-            hosts.append(ip)
 
-        port = parts[1].split(":")[-1]
-        
-        if "-" in port:
-            # It's a range
-            counters["port_range"] += 1
-            port_parts = [ int(x) for x in port.split("-") ]
-            while port[0] <= port[1]:
-                ports.append(port[0])
-                counters['specific_port'] += 1
-                port[0] += 1
-                
-        else:
-            ports.append(port)
-            if port == "*":
-                counters['wildcard_port'] += 1
-            else:
-                counters['specific_port'] += 1
     
+    for policy_line in lines:
+        if len(policy_line) == 0:
+            continue
+        # The policies are comma delimited for single line entries
+        policies = policy_line.split(",")
+        counters["total"] += len(policies)
+        
+        # iterate over the policies and update counters
+        for policy in policies:
+            parts = policy.split(" ")
+            if parts[0].startswith("accept"):
+                counters["accept"] += 1
+            else:
+                counters["reject"] += 1
+                
+            if parts[1].startswith("*"):
+                counters["wildcard"] += 1
+            elif parts[1].startswith("1") or parts[1].startswith("2"):
+                counters["specific"] += 1
+                
+                # ipv6 complicates this a touch
+                ip = ":".join(parts[1].split(":")[0:-1])
+                hosts.append(ip)
+
+            port = parts[1].split(":")[-1]
+            
+            if "-" in port:
+                # It's a range
+                counters["port_range"] += 1
+                port_parts = [ int(x) for x in port.split("-") ]
+                while port_parts[0] <= port_parts[1]:
+                    ports.append(port_parts[0])
+                    counters['specific_port'] += 1
+                    port_parts[0] += 1
+                    
+            else:
+                ports.append(port)
+                if port == "*":
+                    counters['wildcard_port'] += 1
+                else:
+                    counters['specific_port'] += 1
+        
     # Calculate the unique counts
     counters["unique_hosts"] = len(set(hosts))
     counters["unique_ports"] = len(set(ports))
