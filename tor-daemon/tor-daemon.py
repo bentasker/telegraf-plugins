@@ -11,6 +11,7 @@ import datetime
 import os
 import socket
 import sys
+import time
 
 CONTROL_H = os.getenv("CONTROL_HOST", "127.0.0.1")
 CONTROL_P = int(os.getenv("CONTROL_PORT", 9051))
@@ -50,6 +51,23 @@ def send_and_respond(sock, command):
             if not data:
                 break
             res.append(data.decode())
+        except socket.timeout as e:
+            if e.args[0] == "timed out":
+                if len(res) == 0:
+                    # Wait a little longer
+                    time.sleep(0.5)
+                    continue
+                else:
+                    # Looks like we got our read
+                    break
+            else:
+                # Unhandled error
+                print(e)
+                sys.exit(1)
+        except socket.error as e:
+            print(e)
+            sys.exit(1)
+            
         except BlockingIOError:
             break
             
@@ -469,7 +487,8 @@ state = {
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((CONTROL_H, int(CONTROL_P)))
-    s.setblocking(0)
+    # set a read timeout of 0.2s
+    s.settimeout(0.2) 
 except:
     state["stats_failures"] += 1
     state["tags"].append(["failure_type", "connection"])
