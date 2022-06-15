@@ -51,7 +51,14 @@ def send_and_respond(sock, command):
             data = sock.recv(1024)
             if not data:
                 break
-            res.append(data.decode())
+            l = data.decode()
+            res.append(l)
+            
+            if l.startswith("250 OK\r\n") or l.endswith("250 OK\r\n"):
+                # We've reached the end of the message
+                print("EOM")
+                break
+            
         except socket.timeout as e:
             if e.args[0] == "timed out":
                 if len(res) == 0 and read_attempts < 2 and len(res) == 0:
