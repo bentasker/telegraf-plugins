@@ -56,7 +56,6 @@ def send_and_respond(sock, command):
             
             if l.startswith("250 OK\r\n") or l.endswith("250 OK\r\n"):
                 # We've reached the end of the message
-                print("EOM")
                 break
             
         except socket.timeout as e:
