@@ -45,6 +45,7 @@ def send_and_respond(sock, command):
 
     # Read the response
     res = []
+    read_attempts = 0
     while True:
         try:
             data = sock.recv(1024)
@@ -53,9 +54,10 @@ def send_and_respond(sock, command):
             res.append(data.decode())
         except socket.timeout as e:
             if e.args[0] == "timed out":
-                if len(res) == 0:
+                if len(res) == 0 and read_attempts < 2 and len(res) == 0:
                     # Wait a little longer
                     time.sleep(0.5)
+                    read_attempts += 1
                     continue
                 else:
                     # Looks like we got our read
