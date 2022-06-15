@@ -77,9 +77,6 @@ def send_and_respond(sock, command):
             print(e)
             sys.exit(1)
             
-        except BlockingIOError:
-            break
-            
     return ''.join(res).split('\r\n')
 
 
