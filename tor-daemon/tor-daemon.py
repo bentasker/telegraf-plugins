@@ -5,6 +5,7 @@
 # Copyright (c) 2022 B Tasker
 # Released under GNU GPL v3 - https://www.gnu.org/licenses/gpl-3.0.txt
 #
+# Version: 0.2
 #
 
 import datetime
