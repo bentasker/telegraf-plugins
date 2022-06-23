@@ -44,13 +44,13 @@ ensure that it's executable
 Then, add an `exec` section to your telegraf config (replacing the path to the file if you used a different one to me)
 
     [[inputs.exec]]
-    commands = [
-        "/usr/local/src/telegraf_plugins/smartctl-ssd-remaining-endurances.sh",
-    ]
-    timeout = "60s"
-    interval = "15m"
-    name_suffix = ""
-    data_format = "influx"
+        commands = [
+            "/usr/local/src/telegraf_plugins/smartctl-ssd-remaining-endurances.sh",
+        ]
+        timeout = "60s"
+        interval = "15m"
+        name_suffix = ""
+        data_format = "influx"
 
 Then restart telegraf
 
