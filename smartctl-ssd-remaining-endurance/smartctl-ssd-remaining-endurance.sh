@@ -1,5 +1,10 @@
 #!/bin/bash
 #
+# Telegraf exec plugin to call smartctl and collect SSD remaining endurances
+# Created in https://projects.bentasker.co.uk/gils_projects/issue/utilities/telegraf-plugins/7.html
+#
+# Copyright (c) 2021 B Tasker
+# Released under GNU GPL v3 - https://www.gnu.org/licenses/gpl-3.0.txt
 #
 # Version 0.1
 #
