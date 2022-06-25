@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 # Certbot post-deploy hook to report certificate renewals into InfluxDB
-# Created in https://projects.bentasker.co.uk/gils_projects/issue/utilities/telegraf-plugins/7.html
+# Created in https://projects.bentasker.co.uk/gils_projects/issue/utilities/telegraf-plugins/8.html
 #
 # This script should be put into /etc/letsencrypt/renewal-hooks/deploy
 # You can either edit the variables below, or ensure their values are exported into the environment
