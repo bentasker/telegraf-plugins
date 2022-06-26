@@ -63,6 +63,9 @@ Fields
 - `renewed_count`: how many certificates were renewed for this series?
 
 
+See [Tracking and Alerting on LetsEncrypt Certificate Renewals With InfluxDB and Kapacitor](https://www.bentasker.co.uk/posts/documentation/linux/tracking-and-alerting-on-certbot-certificate-renewals-with-influxdb.html) for an example of how to graph and alert based on this data.
+
+
 ----
 
 ### Line Protocol Example
