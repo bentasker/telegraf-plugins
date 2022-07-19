@@ -1,0 +1,503 @@
+{
+	"meta": {
+		"chronografVersion": "1.9.3",
+		"sources": {
+			"0": {
+				"name": "http://influxdb:8086",
+				"link": "/chronograf/v1/sources/0"
+			}
+		}
+	},
+	"dashboard": {
+		"id": "42",
+		"cells": [
+			{
+				"i": "d069580d-6262-4415-a1ea-c111e5e8059b",
+				"x": 8,
+				"y": 0,
+				"w": 4,
+				"h": 3,
+				"name": "Swap Used",
+				"queries": [
+					{
+						"query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"swap\")\n  |> filter(fn: (r) => r._field == \"used_percent\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> aggregateWindow(every: v.windowPeriod, fn: max)",
+						"queryConfig": {
+							"database": "",
+							"measurement": "",
+							"retentionPolicy": "",
+							"fields": [],
+							"tags": {},
+							"groupBy": {
+								"time": "",
+								"tags": []
+							},
+							"areTagsAccepted": false,
+							"rawText": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"swap\")\n  |> filter(fn: (r) => r._field == \"used_percent\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> aggregateWindow(every: v.windowPeriod, fn: max)",
+							"range": null,
+							"shifts": null
+						},
+						"source": "",
+						"type": "flux"
+					}
+				],
+				"axes": {
+					"x": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "%",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y2": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					}
+				},
+				"type": "line",
+				"colors": [
+					{
+						"id": "9d919063-a02b-4b4b-940a-93763be38c64",
+						"type": "scale",
+						"hex": "#FD7A5D",
+						"name": "Delorean",
+						"value": "0"
+					},
+					{
+						"id": "67170da0-5a2f-4acb-ab28-d3d08b0fed02",
+						"type": "scale",
+						"hex": "#5F1CF2",
+						"name": "Delorean",
+						"value": "0"
+					},
+					{
+						"id": "00390666-f4b1-4705-abdc-9becef950dd7",
+						"type": "scale",
+						"hex": "#4CE09A",
+						"name": "Delorean",
+						"value": "0"
+					}
+				],
+				"legend": {},
+				"tableOptions": {
+					"verticalTimeAxis": true,
+					"sortBy": {
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					},
+					"wrapping": "truncate",
+					"fixFirstColumn": true
+				},
+				"fieldOptions": [
+					{
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					}
+				],
+				"timeFormat": "MM/DD/YYYY HH:mm:ss",
+				"decimalPlaces": {
+					"isEnforced": true,
+					"digits": 2
+				},
+				"note": "",
+				"noteVisibility": "default",
+				"links": {
+					"self": "/chronograf/v1/dashboards/42/cells/d069580d-6262-4415-a1ea-c111e5e8059b"
+				}
+			},
+			{
+				"i": "9ecf4c88-c2d4-4a9b-922d-b94183b98e1c",
+				"x": 0,
+				"y": 3,
+				"w": 12,
+				"h": 4,
+				"name": "zswap Pool Size",
+				"queries": [
+					{
+						"query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => r._field == \"stored_pages\" or r._field == \"page_size\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> pivot(rowKey: [\"_time\"], \n           columnKey: [\"_field\"], \n           valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with\n    _value: r.page_size * r.stored_pages\n  }))\n  |> keep(columns: [\"_value\", \"_time\", \"host\", \"_field\"])",
+						"queryConfig": {
+							"database": "",
+							"measurement": "",
+							"retentionPolicy": "",
+							"fields": [],
+							"tags": {},
+							"groupBy": {
+								"time": "",
+								"tags": []
+							},
+							"areTagsAccepted": false,
+							"rawText": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => r._field == \"stored_pages\" or r._field == \"page_size\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> pivot(rowKey: [\"_time\"], \n           columnKey: [\"_field\"], \n           valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with\n    _value: r.page_size * r.stored_pages\n  }))\n  |> keep(columns: [\"_value\", \"_time\", \"host\", \"_field\"])",
+							"range": null,
+							"shifts": null
+						},
+						"source": "",
+						"type": "flux"
+					}
+				],
+				"axes": {
+					"x": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "B",
+						"base": "2",
+						"scale": "linear"
+					},
+					"y2": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					}
+				},
+				"type": "line",
+				"colors": [
+					{
+						"id": "07ed2281-1610-4ef2-9c18-4a52c8be41ef",
+						"type": "scale",
+						"hex": "#31C0F6",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "a2f73ee1-b3e5-4e28-8797-b68301e64d9d",
+						"type": "scale",
+						"hex": "#A500A5",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "d40c56bd-45ed-4f4e-8f4d-0eacbd1e6a3a",
+						"type": "scale",
+						"hex": "#FF7E27",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					}
+				],
+				"legend": {},
+				"tableOptions": {
+					"verticalTimeAxis": true,
+					"sortBy": {
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					},
+					"wrapping": "truncate",
+					"fixFirstColumn": true
+				},
+				"fieldOptions": [
+					{
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					}
+				],
+				"timeFormat": "MM/DD/YYYY HH:mm:ss",
+				"decimalPlaces": {
+					"isEnforced": true,
+					"digits": 2
+				},
+				"note": "",
+				"noteVisibility": "default",
+				"links": {
+					"self": "/chronograf/v1/dashboards/42/cells/9ecf4c88-c2d4-4a9b-922d-b94183b98e1c"
+				}
+			},
+			{
+				"i": "017d0d3b-3302-4452-82bd-faa0882b3ec9",
+				"x": 0,
+				"y": 0,
+				"w": 4,
+				"h": 3,
+				"name": "Current Pool Size",
+				"queries": [
+					{
+						"query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => r._field == \"stored_pages\" or r._field == \"page_size\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> pivot(rowKey: [\"_time\"], \n           columnKey: [\"_field\"], \n           valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with\n    _value: (r.page_size * r.stored_pages) / 1024.0 / 1024.0\n  }))\n  |> last()",
+						"queryConfig": {
+							"database": "",
+							"measurement": "",
+							"retentionPolicy": "",
+							"fields": [],
+							"tags": {},
+							"groupBy": {
+								"time": "",
+								"tags": []
+							},
+							"areTagsAccepted": false,
+							"rawText": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => r._field == \"stored_pages\" or r._field == \"page_size\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> pivot(rowKey: [\"_time\"], \n           columnKey: [\"_field\"], \n           valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with\n    _value: (r.page_size * r.stored_pages) / 1024.0 / 1024.0\n  }))\n  |> last()",
+							"range": null,
+							"shifts": null
+						},
+						"source": "",
+						"type": "flux"
+					}
+				],
+				"axes": {
+					"x": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "%",
+						"prefix": "",
+						"suffix": " MB",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y2": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					}
+				},
+				"type": "single-stat",
+				"colors": [
+					{
+						"id": "base",
+						"type": "text",
+						"hex": "#00C9FF",
+						"name": "laser",
+						"value": "-1000000000000000000"
+					}
+				],
+				"legend": {},
+				"tableOptions": {
+					"verticalTimeAxis": true,
+					"sortBy": {
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					},
+					"wrapping": "truncate",
+					"fixFirstColumn": true
+				},
+				"fieldOptions": [
+					{
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					}
+				],
+				"timeFormat": "MM/DD/YYYY HH:mm:ss",
+				"decimalPlaces": {
+					"isEnforced": true,
+					"digits": 2
+				},
+				"note": "",
+				"noteVisibility": "default",
+				"links": {
+					"self": "/chronograf/v1/dashboards/42/cells/017d0d3b-3302-4452-82bd-faa0882b3ec9"
+				}
+			},
+			{
+				"i": "62cacf88-5af8-4a62-bf68-c1545621346a",
+				"x": 4,
+				"y": 0,
+				"w": 4,
+				"h": 3,
+				"name": "Pool Compression Efficiency",
+				"queries": [
+					{
+						"query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => contains(value: r._field, \n  set: [\"page_size\",\"stored_pages\", \"pool_total_size\"])\n  )\n  |> filter(fn: (r) => r.host == v.host)\n  |> pivot(rowKey: [\"_time\"], \n           columnKey: [\"_field\"], \n           valueColumn: \"_value\")\n  \n  // Use map to calculate compression ratio and\n  // convert to a percentage\n  //\n  // (1 / achieved_ratio)*100\n  |> map(fn: (r) => ({\n     _time: r._time,\n     _field: \"compression_rate\",\n     _value: if r.pool_total_size > 0.0 then\n        (1.0 / ((r.page_size * r.stored_pages) / r.pool_total_size)) * 100.0\n     else \n       0.0\n  }))\n  |> aggregateWindow(every: v.windowPeriod, fn: max)",
+						"queryConfig": {
+							"database": "",
+							"measurement": "",
+							"retentionPolicy": "",
+							"fields": [],
+							"tags": {},
+							"groupBy": {
+								"time": "",
+								"tags": []
+							},
+							"areTagsAccepted": false,
+							"rawText": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => contains(value: r._field, \n  set: [\"page_size\",\"stored_pages\", \"pool_total_size\"])\n  )\n  |> filter(fn: (r) => r.host == v.host)\n  |> pivot(rowKey: [\"_time\"], \n           columnKey: [\"_field\"], \n           valueColumn: \"_value\")\n  \n  // Use map to calculate compression ratio and\n  // convert to a percentage\n  //\n  // (1 / achieved_ratio)*100\n  |> map(fn: (r) => ({\n     _time: r._time,\n     _field: \"compression_rate\",\n     _value: if r.pool_total_size > 0.0 then\n        (1.0 / ((r.page_size * r.stored_pages) / r.pool_total_size)) * 100.0\n     else \n       0.0\n  }))\n  |> aggregateWindow(every: v.windowPeriod, fn: max)",
+							"range": null,
+							"shifts": null
+						},
+						"source": "",
+						"type": "flux"
+					}
+				],
+				"axes": {
+					"x": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "%",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y2": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					}
+				},
+				"type": "line",
+				"colors": [
+					{
+						"id": "07ed2281-1610-4ef2-9c18-4a52c8be41ef",
+						"type": "scale",
+						"hex": "#31C0F6",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "a2f73ee1-b3e5-4e28-8797-b68301e64d9d",
+						"type": "scale",
+						"hex": "#A500A5",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "d40c56bd-45ed-4f4e-8f4d-0eacbd1e6a3a",
+						"type": "scale",
+						"hex": "#FF7E27",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					}
+				],
+				"legend": {},
+				"tableOptions": {
+					"verticalTimeAxis": true,
+					"sortBy": {
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					},
+					"wrapping": "truncate",
+					"fixFirstColumn": true
+				},
+				"fieldOptions": [
+					{
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					}
+				],
+				"timeFormat": "MM/DD/YYYY HH:mm:ss",
+				"decimalPlaces": {
+					"isEnforced": true,
+					"digits": 2
+				},
+				"note": "",
+				"noteVisibility": "default",
+				"links": {
+					"self": "/chronograf/v1/dashboards/42/cells/62cacf88-5af8-4a62-bf68-c1545621346a"
+				}
+			}
+		],
+		"templates": [
+			{
+				"tempVar": ":host:",
+				"values": [
+					{
+						"value": "bumblebee",
+						"type": "tagValue",
+						"selected": true
+					}
+				],
+				"id": "866d59ed-1ff0-4955-9d11-25c9a41e3aa0",
+				"type": "tagValues",
+				"label": "",
+				"query": {
+					"influxql": "SHOW TAG VALUES ON :database: FROM :measurement: WITH KEY=:tagKey:",
+					"db": "telegraf",
+					"measurement": "zswap",
+					"tagKey": "host",
+					"fieldKey": ""
+				},
+				"sourceID": "dynamic",
+				"links": {
+					"self": "/chronograf/v1/dashboards/42/templates/866d59ed-1ff0-4955-9d11-25c9a41e3aa0"
+				}
+			}
+		],
+		"name": "zswap",
+		"organization": "default",
+		"links": {
+			"self": "/chronograf/v1/dashboards/42",
+			"cells": "/chronograf/v1/dashboards/42/cells",
+			"templates": "/chronograf/v1/dashboards/42/templates"
+		}
+	}
+}
