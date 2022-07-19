@@ -12,10 +12,595 @@
 		"id": "42",
 		"cells": [
 			{
-				"i": "d069580d-6262-4415-a1ea-c111e5e8059b",
+				"i": "e1145c7b-9baa-4c84-825c-7d45f45414ca",
+				"x": 0,
+				"y": 6,
+				"w": 12,
+				"h": 3,
+				"name": "Evicted Pages",
+				"queries": [
+					{
+						"query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => r._field == \"written_back_pages\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> derivative()\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)\n  |> keep(columns: [\"_field\", \"_value\", \"_time\"])",
+						"queryConfig": {
+							"database": "",
+							"measurement": "",
+							"retentionPolicy": "",
+							"fields": [],
+							"tags": {},
+							"groupBy": {
+								"time": "",
+								"tags": []
+							},
+							"areTagsAccepted": false,
+							"rawText": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => r._field == \"written_back_pages\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> derivative()\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)\n  |> keep(columns: [\"_field\", \"_value\", \"_time\"])",
+							"range": null,
+							"shifts": null
+						},
+						"source": "",
+						"type": "flux"
+					}
+				],
+				"axes": {
+					"x": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "Count",
+						"prefix": "",
+						"suffix": "/s",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y2": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					}
+				},
+				"type": "line",
+				"colors": [
+					{
+						"id": "07ed2281-1610-4ef2-9c18-4a52c8be41ef",
+						"type": "scale",
+						"hex": "#31C0F6",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "a2f73ee1-b3e5-4e28-8797-b68301e64d9d",
+						"type": "scale",
+						"hex": "#A500A5",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "d40c56bd-45ed-4f4e-8f4d-0eacbd1e6a3a",
+						"type": "scale",
+						"hex": "#FF7E27",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					}
+				],
+				"legend": {},
+				"tableOptions": {
+					"verticalTimeAxis": true,
+					"sortBy": {
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					},
+					"wrapping": "truncate",
+					"fixFirstColumn": true
+				},
+				"fieldOptions": [
+					{
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					}
+				],
+				"timeFormat": "MM/DD/YYYY HH:mm:ss",
+				"decimalPlaces": {
+					"isEnforced": true,
+					"digits": 2
+				},
+				"note": "",
+				"noteVisibility": "default",
+				"links": {
+					"self": "/chronograf/v1/dashboards/42/cells/e1145c7b-9baa-4c84-825c-7d45f45414ca"
+				}
+			},
+			{
+				"i": "68f2b7b1-c58c-4aa4-bd1d-4e8cf1ef0511",
+				"x": 0,
+				"y": 3,
+				"w": 6,
+				"h": 3,
+				"name": "Stored Pages",
+				"queries": [
+					{
+						"query": "import \"strings\"\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => r._field == \"stored_pages\")\n  |> derivative()\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)\n  |> keep(columns: [\"_field\", \"_value\", \"_time\"])",
+						"queryConfig": {
+							"database": "",
+							"measurement": "",
+							"retentionPolicy": "",
+							"fields": [],
+							"tags": {},
+							"groupBy": {
+								"time": "",
+								"tags": []
+							},
+							"areTagsAccepted": false,
+							"rawText": "import \"strings\"\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => r._field == \"stored_pages\")\n  |> derivative()\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)\n  |> keep(columns: [\"_field\", \"_value\", \"_time\"])",
+							"range": null,
+							"shifts": null
+						},
+						"source": "",
+						"type": "flux"
+					}
+				],
+				"axes": {
+					"x": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y": {
+						"bounds": [
+							"0",
+							""
+						],
+						"label": "Count",
+						"prefix": "",
+						"suffix": "/s",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y2": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					}
+				},
+				"type": "line",
+				"colors": [
+					{
+						"id": "07ed2281-1610-4ef2-9c18-4a52c8be41ef",
+						"type": "scale",
+						"hex": "#31C0F6",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "a2f73ee1-b3e5-4e28-8797-b68301e64d9d",
+						"type": "scale",
+						"hex": "#A500A5",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "d40c56bd-45ed-4f4e-8f4d-0eacbd1e6a3a",
+						"type": "scale",
+						"hex": "#FF7E27",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					}
+				],
+				"legend": {},
+				"tableOptions": {
+					"verticalTimeAxis": true,
+					"sortBy": {
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					},
+					"wrapping": "truncate",
+					"fixFirstColumn": true
+				},
+				"fieldOptions": [
+					{
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					}
+				],
+				"timeFormat": "MM/DD/YYYY HH:mm:ss",
+				"decimalPlaces": {
+					"isEnforced": true,
+					"digits": 2
+				},
+				"note": "",
+				"noteVisibility": "default",
+				"links": {
+					"self": "/chronograf/v1/dashboards/42/cells/68f2b7b1-c58c-4aa4-bd1d-4e8cf1ef0511"
+				}
+			},
+			{
+				"i": "b52a6621-effd-42b9-a88a-1581bae5c82c",
+				"x": 6,
+				"y": 3,
+				"w": 6,
+				"h": 3,
+				"name": "Rejected Pages",
+				"queries": [
+					{
+						"query": "import \"strings\"\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => strings.hasPrefix(v: r._field, prefix: \"reject_\"))\n  |> filter(fn: (r) => r.host == v.host)\n  |> derivative()\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)\n  |> keep(columns: [\"_field\", \"_value\", \"_time\"])",
+						"queryConfig": {
+							"database": "",
+							"measurement": "",
+							"retentionPolicy": "",
+							"fields": [],
+							"tags": {},
+							"groupBy": {
+								"time": "",
+								"tags": []
+							},
+							"areTagsAccepted": false,
+							"rawText": "import \"strings\"\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => strings.hasPrefix(v: r._field, prefix: \"reject_\"))\n  |> filter(fn: (r) => r.host == v.host)\n  |> derivative()\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)\n  |> keep(columns: [\"_field\", \"_value\", \"_time\"])",
+							"range": null,
+							"shifts": null
+						},
+						"source": "",
+						"type": "flux"
+					}
+				],
+				"axes": {
+					"x": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "Count",
+						"prefix": "",
+						"suffix": "/s",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y2": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					}
+				},
+				"type": "line",
+				"colors": [
+					{
+						"id": "07ed2281-1610-4ef2-9c18-4a52c8be41ef",
+						"type": "scale",
+						"hex": "#31C0F6",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "a2f73ee1-b3e5-4e28-8797-b68301e64d9d",
+						"type": "scale",
+						"hex": "#A500A5",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "d40c56bd-45ed-4f4e-8f4d-0eacbd1e6a3a",
+						"type": "scale",
+						"hex": "#FF7E27",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					}
+				],
+				"legend": {},
+				"tableOptions": {
+					"verticalTimeAxis": true,
+					"sortBy": {
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					},
+					"wrapping": "truncate",
+					"fixFirstColumn": true
+				},
+				"fieldOptions": [
+					{
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					}
+				],
+				"timeFormat": "MM/DD/YYYY HH:mm:ss",
+				"decimalPlaces": {
+					"isEnforced": true,
+					"digits": 2
+				},
+				"note": "",
+				"noteVisibility": "default",
+				"links": {
+					"self": "/chronograf/v1/dashboards/42/cells/b52a6621-effd-42b9-a88a-1581bae5c82c"
+				}
+			},
+			{
+				"i": "f4ee8cdd-c02d-44f0-a041-26f661efc5a4",
 				"x": 8,
 				"y": 0,
 				"w": 4,
+				"h": 3,
+				"name": "Pool Used",
+				"queries": [
+					{
+						"query": "perc = from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => r._field == \"max_pool_percent\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> last()\n  \n// Get the total memory  \nmem = from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"mem\")\n  |> filter(fn: (r) => r._field == \"total\")\n  |> filter(fn: (r) => r.host == v.host)  \n  |> last()\n  |> toFloat()\n  \n// Put them together and do maths\navail = union(tables: [perc, mem])\n  |> group()\n  |> pivot(rowKey: [\"_stop\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ \n      _stop: r._stop,\n     _value: ((r.total / 100.0) * r.max_pool_percent) / 1024.0 / 1024.0,\n     _field: \"avail\"\n  }))\n  \n\nused = from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => r._field == \"stored_pages\" or r._field == \"page_size\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> pivot(rowKey: [\"_time\"], \n           columnKey: [\"_field\"], \n           valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with\n    _stop: r._stop,\n    _value: (r.page_size * r.stored_pages) / 1024.0 / 1024.0,\n    _field: \"used\"\n  }))\n  |> last()\n  \n// Union together and calculate percentage  \nunion(tables: [avail, used])\n  |> group()\n  |> pivot(rowKey: [\"_stop\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({\n      _value: (r.used / r.avail) * 100.0\n  }))",
+						"queryConfig": {
+							"database": "",
+							"measurement": "",
+							"retentionPolicy": "",
+							"fields": [],
+							"tags": {},
+							"groupBy": {
+								"time": "",
+								"tags": []
+							},
+							"areTagsAccepted": false,
+							"rawText": "perc = from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => r._field == \"max_pool_percent\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> last()\n  \n// Get the total memory  \nmem = from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"mem\")\n  |> filter(fn: (r) => r._field == \"total\")\n  |> filter(fn: (r) => r.host == v.host)  \n  |> last()\n  |> toFloat()\n  \n// Put them together and do maths\navail = union(tables: [perc, mem])\n  |> group()\n  |> pivot(rowKey: [\"_stop\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ \n      _stop: r._stop,\n     _value: ((r.total / 100.0) * r.max_pool_percent) / 1024.0 / 1024.0,\n     _field: \"avail\"\n  }))\n  \n\nused = from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => r._field == \"stored_pages\" or r._field == \"page_size\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> pivot(rowKey: [\"_time\"], \n           columnKey: [\"_field\"], \n           valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with\n    _stop: r._stop,\n    _value: (r.page_size * r.stored_pages) / 1024.0 / 1024.0,\n    _field: \"used\"\n  }))\n  |> last()\n  \n// Union together and calculate percentage  \nunion(tables: [avail, used])\n  |> group()\n  |> pivot(rowKey: [\"_stop\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({\n      _value: (r.used / r.avail) * 100.0\n  }))",
+							"range": null,
+							"shifts": null
+						},
+						"source": "",
+						"type": "flux"
+					}
+				],
+				"axes": {
+					"x": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "%",
+						"prefix": "",
+						"suffix": "%",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y2": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					}
+				},
+				"type": "single-stat",
+				"colors": [
+					{
+						"id": "base",
+						"type": "text",
+						"hex": "#00C9FF",
+						"name": "laser",
+						"value": "-1000000000000000000"
+					},
+					{
+						"id": "823b4b65-18b3-45fd-98ec-dfec8b76985b",
+						"type": "text",
+						"hex": "#32B08C",
+						"name": "viridian",
+						"value": "25"
+					},
+					{
+						"id": "a78445a4-55da-4c39-8b02-8cdb3bc22b61",
+						"type": "text",
+						"hex": "#7CE490",
+						"name": "honeydew",
+						"value": "50"
+					},
+					{
+						"id": "8274d7d0-c790-420b-b685-30e74bccb20f",
+						"type": "text",
+						"hex": "#FFB94A",
+						"name": "pineapple",
+						"value": "75"
+					},
+					{
+						"id": "e8ff4909-202d-45f6-8a16-b247bece5f66",
+						"type": "text",
+						"hex": "#F95F53",
+						"name": "curacao",
+						"value": "90"
+					}
+				],
+				"legend": {},
+				"tableOptions": {
+					"verticalTimeAxis": true,
+					"sortBy": {
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					},
+					"wrapping": "truncate",
+					"fixFirstColumn": true
+				},
+				"fieldOptions": [
+					{
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					}
+				],
+				"timeFormat": "MM/DD/YYYY HH:mm:ss",
+				"decimalPlaces": {
+					"isEnforced": true,
+					"digits": 2
+				},
+				"note": "",
+				"noteVisibility": "default",
+				"links": {
+					"self": "/chronograf/v1/dashboards/42/cells/f4ee8cdd-c02d-44f0-a041-26f661efc5a4"
+				}
+			},
+			{
+				"i": "99d1549d-1eb6-46df-9129-fae0b016b850",
+				"x": 4,
+				"y": 0,
+				"w": 4,
+				"h": 3,
+				"name": "Max Pool Size",
+				"queries": [
+					{
+						"query": "perc = from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => r._field == \"max_pool_percent\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> last()\n  \n// Get the total memory  \nmem = from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"mem\")\n  |> filter(fn: (r) => r._field == \"total\")\n  |> filter(fn: (r) => r.host == v.host)  \n  |> last()\n  |> toFloat()\n  \n// Put them together and do maths\nunion(tables: [perc, mem])\n  |> group()\n  |> pivot(rowKey: [\"_stop\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ \n     _value: ((r.total / 100.0) * r.max_pool_percent) / 1024.0 / 1024.0\n  }))",
+						"queryConfig": {
+							"database": "",
+							"measurement": "",
+							"retentionPolicy": "",
+							"fields": [],
+							"tags": {},
+							"groupBy": {
+								"time": "",
+								"tags": []
+							},
+							"areTagsAccepted": false,
+							"rawText": "perc = from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"zswap\")\n  |> filter(fn: (r) => r._field == \"max_pool_percent\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> last()\n  \n// Get the total memory  \nmem = from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"mem\")\n  |> filter(fn: (r) => r._field == \"total\")\n  |> filter(fn: (r) => r.host == v.host)  \n  |> last()\n  |> toFloat()\n  \n// Put them together and do maths\nunion(tables: [perc, mem])\n  |> group()\n  |> pivot(rowKey: [\"_stop\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ \n     _value: ((r.total / 100.0) * r.max_pool_percent) / 1024.0 / 1024.0\n  }))",
+							"range": null,
+							"shifts": null
+						},
+						"source": "",
+						"type": "flux"
+					}
+				],
+				"axes": {
+					"x": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "%",
+						"prefix": "",
+						"suffix": " MB",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y2": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					}
+				},
+				"type": "single-stat",
+				"colors": [
+					{
+						"id": "base",
+						"type": "text",
+						"hex": "#00C9FF",
+						"name": "laser",
+						"value": "-1000000000000000000"
+					}
+				],
+				"legend": {},
+				"tableOptions": {
+					"verticalTimeAxis": true,
+					"sortBy": {
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					},
+					"wrapping": "truncate",
+					"fixFirstColumn": true
+				},
+				"fieldOptions": [
+					{
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					}
+				],
+				"timeFormat": "MM/DD/YYYY HH:mm:ss",
+				"decimalPlaces": {
+					"isEnforced": true,
+					"digits": 2
+				},
+				"note": "",
+				"noteVisibility": "default",
+				"links": {
+					"self": "/chronograf/v1/dashboards/42/cells/99d1549d-1eb6-46df-9129-fae0b016b850"
+				}
+			},
+			{
+				"i": "d069580d-6262-4415-a1ea-c111e5e8059b",
+				"x": 6,
+				"y": 9,
+				"w": 6,
 				"h": 3,
 				"name": "Swap Used",
 				"queries": [
@@ -131,7 +716,7 @@
 			{
 				"i": "9ecf4c88-c2d4-4a9b-922d-b94183b98e1c",
 				"x": 0,
-				"y": 3,
+				"y": 12,
 				"w": 12,
 				"h": 4,
 				"name": "zswap Pool Size",
@@ -174,7 +759,7 @@
 							"",
 							""
 						],
-						"label": "",
+						"label": "Size",
 						"prefix": "",
 						"suffix": "B",
 						"base": "2",
@@ -350,9 +935,9 @@
 			},
 			{
 				"i": "62cacf88-5af8-4a62-bf68-c1545621346a",
-				"x": 4,
-				"y": 0,
-				"w": 4,
+				"x": 0,
+				"y": 9,
+				"w": 6,
 				"h": 3,
 				"name": "Pool Compression Efficiency",
 				"queries": [
