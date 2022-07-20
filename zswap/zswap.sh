@@ -1,6 +1,13 @@
 #!/bin/bash
 #
+# zswap exec plugin for telegraf
 #
+# https://github.com/bentasker/telegraf-plugins/tree/master/zswap
+#
+# Copyright (c) 2022 B Tasker
+#
+# Released under GNU GPL V3
+# https://www.gnu.org/licenses/gpl-3.0.txt
 
 MEASUREMENT=${MEASUREMENT:-"zswap"}
 
