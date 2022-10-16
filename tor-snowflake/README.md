@@ -5,6 +5,8 @@ This `exec` plugin for [Telegraf](https://github.com/influxdata/telegraf) collec
 
 The most common means of running Snowflake on a server is with docker, so this plugin assumes that's what you've done (if you are running directly, you should just need to replace the `docker` call with a `journalctl` call - depending on how you've configured logging)
 
+There's a write-up on setting up and monitoring Snowflake at [https://www.bentasker.co.uk/posts/documentation/linux/run-a-tor-snowflake-proxy.html](https://www.bentasker.co.uk/posts/documentation/linux/run-a-tor-snowflake-proxy.html).
+
 ----
 
 ### Setup
@@ -48,3 +50,11 @@ The directory `dashboards` contains example dashboards for
 * [`Chronograf`](dashboards/chronograf.json)
 * [`Grafana`](dashboards/grafana.json)
 
+----
+
+### Copyright
+
+Copyright (c) 2022 [Ben Tasker](https://www.bentasker.co.uk)
+
+Released under [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.txt)
+    
