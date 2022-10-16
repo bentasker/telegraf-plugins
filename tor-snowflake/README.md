@@ -41,7 +41,10 @@ Then restart telegraf
     
 ----
 
-### Additional Configuration
+### Graphing
 
-The plugin can be configured via environment variables - since
+The directory `dashboards` contains example dashboards for
+
+* [`Chronograf`](dashboards/chronograf.json)
+* [`Grafana`](dashboards/grafana.json)
 

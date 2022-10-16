@@ -1,0 +1,826 @@
+{
+	"meta": {
+		"chronografVersion": "1.9.3",
+		"sources": {
+			"0": {
+				"name": "http://influxdb:8086",
+				"link": "/chronograf/v1/sources/0"
+			}
+		}
+	},
+	"dashboard": {
+		"id": "45",
+		"cells": [
+			{
+				"i": "de8c960d-1774-4627-a00c-cda45b2cdac8",
+				"x": 8,
+				"y": 0,
+				"w": 4,
+				"h": 2,
+				"name": "Traffic Received",
+				"queries": [
+					{
+						"query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"snowflake\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> filter(fn: (r) => r._field == \"recv\")\n  |> sum()\n  |> map(fn: (r) => ({\n      _time: r._time,\n      _field: r._field,\n      _value: r._value / 1000 / 1000\n      }))\n  ",
+						"queryConfig": {
+							"database": "",
+							"measurement": "",
+							"retentionPolicy": "",
+							"fields": [],
+							"tags": {},
+							"groupBy": {
+								"time": "",
+								"tags": []
+							},
+							"areTagsAccepted": false,
+							"rawText": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"snowflake\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> filter(fn: (r) => r._field == \"recv\")\n  |> sum()\n  |> map(fn: (r) => ({\n      _time: r._time,\n      _field: r._field,\n      _value: r._value / 1000 / 1000\n      }))\n  ",
+							"range": null,
+							"shifts": null
+						},
+						"source": "",
+						"type": "flux"
+					}
+				],
+				"axes": {
+					"x": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "Count",
+						"prefix": "",
+						"suffix": " MB",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y2": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					}
+				},
+				"type": "single-stat",
+				"colors": [
+					{
+						"id": "base",
+						"type": "text",
+						"hex": "#00C9FF",
+						"name": "laser",
+						"value": "-1000000000000000000"
+					}
+				],
+				"legend": {},
+				"tableOptions": {
+					"verticalTimeAxis": true,
+					"sortBy": {
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					},
+					"wrapping": "truncate",
+					"fixFirstColumn": true
+				},
+				"fieldOptions": [
+					{
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					}
+				],
+				"timeFormat": "MM/DD/YYYY HH:mm:ss",
+				"decimalPlaces": {
+					"isEnforced": true,
+					"digits": 2
+				},
+				"note": "",
+				"noteVisibility": "default",
+				"links": {
+					"self": "/chronograf/v1/dashboards/45/cells/de8c960d-1774-4627-a00c-cda45b2cdac8"
+				}
+			},
+			{
+				"i": "e97f25f9-fa28-45f0-847e-c6505e079f7f",
+				"x": 4,
+				"y": 0,
+				"w": 4,
+				"h": 2,
+				"name": "Traffic Sent",
+				"queries": [
+					{
+						"query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"snowflake\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> filter(fn: (r) => r._field == \"sent\")\n  |> sum()\n  |> map(fn: (r) => ({\n      _time: r._time,\n      _field: r._field,\n      _value: r._value / 1000 / 1000\n      }))\n  ",
+						"queryConfig": {
+							"database": "",
+							"measurement": "",
+							"retentionPolicy": "",
+							"fields": [],
+							"tags": {},
+							"groupBy": {
+								"time": "",
+								"tags": []
+							},
+							"areTagsAccepted": false,
+							"rawText": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"snowflake\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> filter(fn: (r) => r._field == \"sent\")\n  |> sum()\n  |> map(fn: (r) => ({\n      _time: r._time,\n      _field: r._field,\n      _value: r._value / 1000 / 1000\n      }))\n  ",
+							"range": null,
+							"shifts": null
+						},
+						"source": "",
+						"type": "flux"
+					}
+				],
+				"axes": {
+					"x": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "Count",
+						"prefix": "",
+						"suffix": " MB",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y2": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					}
+				},
+				"type": "single-stat",
+				"colors": [
+					{
+						"id": "base",
+						"type": "text",
+						"hex": "#00C9FF",
+						"name": "laser",
+						"value": "-1000000000000000000"
+					}
+				],
+				"legend": {},
+				"tableOptions": {
+					"verticalTimeAxis": true,
+					"sortBy": {
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					},
+					"wrapping": "truncate",
+					"fixFirstColumn": true
+				},
+				"fieldOptions": [
+					{
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					}
+				],
+				"timeFormat": "MM/DD/YYYY HH:mm:ss",
+				"decimalPlaces": {
+					"isEnforced": true,
+					"digits": 2
+				},
+				"note": "",
+				"noteVisibility": "default",
+				"links": {
+					"self": "/chronograf/v1/dashboards/45/cells/e97f25f9-fa28-45f0-847e-c6505e079f7f"
+				}
+			},
+			{
+				"i": "ce7dd8b7-2742-4740-becd-3a68524b4bf9",
+				"x": 0,
+				"y": 0,
+				"w": 4,
+				"h": 2,
+				"name": "Connections Handled",
+				"queries": [
+					{
+						"query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"snowflake\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> filter(fn: (r) => r._field == \"conns\")\n  |> sum()",
+						"queryConfig": {
+							"database": "",
+							"measurement": "",
+							"retentionPolicy": "",
+							"fields": [],
+							"tags": {},
+							"groupBy": {
+								"time": "",
+								"tags": []
+							},
+							"areTagsAccepted": false,
+							"rawText": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"snowflake\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> filter(fn: (r) => r._field == \"conns\")\n  |> sum()",
+							"range": null,
+							"shifts": null
+						},
+						"source": "",
+						"type": "flux"
+					}
+				],
+				"axes": {
+					"x": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "Count",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y2": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					}
+				},
+				"type": "single-stat",
+				"colors": [
+					{
+						"id": "base",
+						"type": "text",
+						"hex": "#00C9FF",
+						"name": "laser",
+						"value": "-1000000000000000000"
+					}
+				],
+				"legend": {},
+				"tableOptions": {
+					"verticalTimeAxis": true,
+					"sortBy": {
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					},
+					"wrapping": "truncate",
+					"fixFirstColumn": true
+				},
+				"fieldOptions": [
+					{
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					}
+				],
+				"timeFormat": "MM/DD/YYYY HH:mm:ss",
+				"decimalPlaces": {
+					"isEnforced": true,
+					"digits": 2
+				},
+				"note": "",
+				"noteVisibility": "default",
+				"links": {
+					"self": "/chronograf/v1/dashboards/45/cells/ce7dd8b7-2742-4740-becd-3a68524b4bf9"
+				}
+			},
+			{
+				"i": "9d4843d3-fc93-464c-914b-8cdbccf967ce",
+				"x": 6,
+				"y": 10,
+				"w": 6,
+				"h": 4,
+				"name": "Container RAM Usage",
+				"queries": [
+					{
+						"query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"docker_container_mem\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> filter(fn: (r) => r.container_name == \"snowflake-proxy\")\n  |> filter(fn: (r) => r._field == \"usage\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)\n  |> map(fn: (r) => ({\n  \t_time: r._time,\n    _field: \"Mem MB\",\n    _value: r._value / 1000.0 / 1000.0\n  \n  }))\n",
+						"queryConfig": {
+							"database": "",
+							"measurement": "",
+							"retentionPolicy": "",
+							"fields": [],
+							"tags": {},
+							"groupBy": {
+								"time": "",
+								"tags": []
+							},
+							"areTagsAccepted": false,
+							"rawText": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"docker_container_mem\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> filter(fn: (r) => r.container_name == \"snowflake-proxy\")\n  |> filter(fn: (r) => r._field == \"usage\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)\n  |> map(fn: (r) => ({\n  \t_time: r._time,\n    _field: \"Mem MB\",\n    _value: r._value / 1000.0 / 1000.0\n  \n  }))\n",
+							"range": null,
+							"shifts": null
+						},
+						"source": "",
+						"type": "flux"
+					}
+				],
+				"axes": {
+					"x": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "MB",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y2": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					}
+				},
+				"type": "line",
+				"colors": [
+					{
+						"id": "c6cd0174-5fe7-4de5-90f7-3acae3f05965",
+						"type": "scale",
+						"hex": "#31C0F6",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "7dddcabf-7b25-432f-a715-bf79860f9fe4",
+						"type": "scale",
+						"hex": "#A500A5",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "eb6e14f1-16a5-470b-86f0-52c7592fbd6d",
+						"type": "scale",
+						"hex": "#FF7E27",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					}
+				],
+				"legend": {},
+				"tableOptions": {
+					"verticalTimeAxis": true,
+					"sortBy": {
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					},
+					"wrapping": "truncate",
+					"fixFirstColumn": true
+				},
+				"fieldOptions": [
+					{
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					}
+				],
+				"timeFormat": "MM/DD/YYYY HH:mm:ss",
+				"decimalPlaces": {
+					"isEnforced": true,
+					"digits": 2
+				},
+				"note": "",
+				"noteVisibility": "default",
+				"links": {
+					"self": "/chronograf/v1/dashboards/45/cells/9d4843d3-fc93-464c-914b-8cdbccf967ce"
+				}
+			},
+			{
+				"i": "55aab9b0-f1af-4a04-a0ec-41762957602e",
+				"x": 0,
+				"y": 10,
+				"w": 6,
+				"h": 4,
+				"name": "Container CPU Usage",
+				"queries": [
+					{
+						"query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"docker_container_cpu\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> filter(fn: (r) => r.container_name == \"snowflake-proxy\")\n  |> filter(fn: (r) => r._field == \"usage_percent\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)\n",
+						"queryConfig": {
+							"database": "",
+							"measurement": "",
+							"retentionPolicy": "",
+							"fields": [],
+							"tags": {},
+							"groupBy": {
+								"time": "",
+								"tags": []
+							},
+							"areTagsAccepted": false,
+							"rawText": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"docker_container_cpu\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> filter(fn: (r) => r.container_name == \"snowflake-proxy\")\n  |> filter(fn: (r) => r._field == \"usage_percent\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)\n",
+							"range": null,
+							"shifts": null
+						},
+						"source": "",
+						"type": "flux"
+					}
+				],
+				"axes": {
+					"x": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "%",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y2": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					}
+				},
+				"type": "line",
+				"colors": [
+					{
+						"id": "c6cd0174-5fe7-4de5-90f7-3acae3f05965",
+						"type": "scale",
+						"hex": "#31C0F6",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "7dddcabf-7b25-432f-a715-bf79860f9fe4",
+						"type": "scale",
+						"hex": "#A500A5",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "eb6e14f1-16a5-470b-86f0-52c7592fbd6d",
+						"type": "scale",
+						"hex": "#FF7E27",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					}
+				],
+				"legend": {},
+				"tableOptions": {
+					"verticalTimeAxis": true,
+					"sortBy": {
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					},
+					"wrapping": "truncate",
+					"fixFirstColumn": true
+				},
+				"fieldOptions": [
+					{
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					}
+				],
+				"timeFormat": "MM/DD/YYYY HH:mm:ss",
+				"decimalPlaces": {
+					"isEnforced": true,
+					"digits": 2
+				},
+				"note": "",
+				"noteVisibility": "default",
+				"links": {
+					"self": "/chronograf/v1/dashboards/45/cells/55aab9b0-f1af-4a04-a0ec-41762957602e"
+				}
+			},
+			{
+				"i": "e4163fba-02da-43c5-b306-32a49f78d7f6",
+				"x": 0,
+				"y": 6,
+				"w": 12,
+				"h": 4,
+				"name": "Traffic Relayed",
+				"queries": [
+					{
+						"query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"snowflake\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> filter(fn: (r) => r._field == \"sent\" or r._field == \"recv\")\n  |> aggregateWindow(every: v.windowPeriod, fn: sum)\n  |> map(fn: (r) => ({\n      _time: r._time,\n      _field: r._field,\n      _value: r._value / 1000 / 1000\n      }))\n  ",
+						"queryConfig": {
+							"database": "",
+							"measurement": "",
+							"retentionPolicy": "",
+							"fields": [],
+							"tags": {},
+							"groupBy": {
+								"time": "",
+								"tags": []
+							},
+							"areTagsAccepted": false,
+							"rawText": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"snowflake\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> filter(fn: (r) => r._field == \"sent\" or r._field == \"recv\")\n  |> aggregateWindow(every: v.windowPeriod, fn: sum)\n  |> map(fn: (r) => ({\n      _time: r._time,\n      _field: r._field,\n      _value: r._value / 1000 / 1000\n      }))\n  ",
+							"range": null,
+							"shifts": null
+						},
+						"source": "",
+						"type": "flux"
+					}
+				],
+				"axes": {
+					"x": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "MB",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y2": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					}
+				},
+				"type": "line",
+				"colors": [
+					{
+						"id": "c6cd0174-5fe7-4de5-90f7-3acae3f05965",
+						"type": "scale",
+						"hex": "#31C0F6",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "7dddcabf-7b25-432f-a715-bf79860f9fe4",
+						"type": "scale",
+						"hex": "#A500A5",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "eb6e14f1-16a5-470b-86f0-52c7592fbd6d",
+						"type": "scale",
+						"hex": "#FF7E27",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					}
+				],
+				"legend": {},
+				"tableOptions": {
+					"verticalTimeAxis": true,
+					"sortBy": {
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					},
+					"wrapping": "truncate",
+					"fixFirstColumn": true
+				},
+				"fieldOptions": [
+					{
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					}
+				],
+				"timeFormat": "MM/DD/YYYY HH:mm:ss",
+				"decimalPlaces": {
+					"isEnforced": true,
+					"digits": 2
+				},
+				"note": "",
+				"noteVisibility": "default",
+				"links": {
+					"self": "/chronograf/v1/dashboards/45/cells/e4163fba-02da-43c5-b306-32a49f78d7f6"
+				}
+			},
+			{
+				"i": "73b2217a-a3ed-40af-b8d7-7e78c2299a44",
+				"x": 0,
+				"y": 2,
+				"w": 12,
+				"h": 4,
+				"name": "Connections",
+				"queries": [
+					{
+						"query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"snowflake\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> filter(fn: (r) => r._field == \"conns\")\n  |> aggregateWindow(every: v.windowPeriod, fn: sum)",
+						"queryConfig": {
+							"database": "",
+							"measurement": "",
+							"retentionPolicy": "",
+							"fields": [],
+							"tags": {},
+							"groupBy": {
+								"time": "",
+								"tags": []
+							},
+							"areTagsAccepted": false,
+							"rawText": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart)\n  |> filter(fn: (r) => r._measurement == \"snowflake\")\n  |> filter(fn: (r) => r.host == v.host)\n  |> filter(fn: (r) => r._field == \"conns\")\n  |> aggregateWindow(every: v.windowPeriod, fn: sum)",
+							"range": null,
+							"shifts": null
+						},
+						"source": "",
+						"type": "flux"
+					}
+				],
+				"axes": {
+					"x": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "Count",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					},
+					"y2": {
+						"bounds": [
+							"",
+							""
+						],
+						"label": "",
+						"prefix": "",
+						"suffix": "",
+						"base": "10",
+						"scale": "linear"
+					}
+				},
+				"type": "line",
+				"colors": [
+					{
+						"id": "c6cd0174-5fe7-4de5-90f7-3acae3f05965",
+						"type": "scale",
+						"hex": "#31C0F6",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "7dddcabf-7b25-432f-a715-bf79860f9fe4",
+						"type": "scale",
+						"hex": "#A500A5",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					},
+					{
+						"id": "eb6e14f1-16a5-470b-86f0-52c7592fbd6d",
+						"type": "scale",
+						"hex": "#FF7E27",
+						"name": "Nineteen Eighty Four",
+						"value": "0"
+					}
+				],
+				"legend": {},
+				"tableOptions": {
+					"verticalTimeAxis": true,
+					"sortBy": {
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					},
+					"wrapping": "truncate",
+					"fixFirstColumn": true
+				},
+				"fieldOptions": [
+					{
+						"internalName": "time",
+						"displayName": "",
+						"visible": true
+					}
+				],
+				"timeFormat": "MM/DD/YYYY HH:mm:ss",
+				"decimalPlaces": {
+					"isEnforced": true,
+					"digits": 2
+				},
+				"note": "",
+				"noteVisibility": "default",
+				"links": {
+					"self": "/chronograf/v1/dashboards/45/cells/73b2217a-a3ed-40af-b8d7-7e78c2299a44"
+				}
+			}
+		],
+		"templates": [
+			{
+				"tempVar": ":host:",
+				"values": [
+					{
+						"value": "sp.bentasker.co.uk",
+						"type": "tagValue",
+						"selected": true
+					}
+				],
+				"id": "adea1c26-49a5-42a4-9a5f-35ad1dd97b93",
+				"type": "tagValues",
+				"label": "",
+				"query": {
+					"influxql": "SHOW TAG VALUES ON :database: FROM :measurement: WITH KEY=:tagKey:",
+					"db": "telegraf",
+					"measurement": "snowflake",
+					"tagKey": "host",
+					"fieldKey": ""
+				},
+				"sourceID": "dynamic",
+				"links": {
+					"self": "/chronograf/v1/dashboards/45/templates/adea1c26-49a5-42a4-9a5f-35ad1dd97b93"
+				}
+			}
+		],
+		"name": "Tor Snowflake",
+		"organization": "default",
+		"links": {
+			"self": "/chronograf/v1/dashboards/45",
+			"cells": "/chronograf/v1/dashboards/45/cells",
+			"templates": "/chronograf/v1/dashboards/45/templates"
+		}
+	}
+}
