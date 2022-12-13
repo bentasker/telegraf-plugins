@@ -12,7 +12,9 @@ Note that because this plugin is collecting mentions rather than aggregate stats
 
 * `type`: The webmention type (`in-reply-to`, `like-of`, `repost-of`, `bookmark-of`, `mention-of`, `rsvp`, `follow-of`)
 * `url`: The URL that the mention references (i.e. the URL on your site)
+* `domain`: The domain that the mention refers to
 * `author`: The author of the mention
+* `srcdomain`: The domain that the mention was made on
 
 ----
 

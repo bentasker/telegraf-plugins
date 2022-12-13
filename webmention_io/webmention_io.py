@@ -24,6 +24,7 @@ import datetime as dt
 import requests
 
 from dateutil.parser import parse
+from urllib.parse import urlparse
 
 # The measurement to write mentions into
 MEASUREMENT = "webmentions"
@@ -57,10 +58,11 @@ def build_lp(entry):
 
     # Linked URL
     url = entry['wm-target'].split("#")[0]
-
+    domain = urlparse(url).netloc
+    
     # Where they linked from
     source_url = entry['url'].replace('"', '')
-
+    source_domain = urlparse(source_url).netloc
 
     # Start putting it all together
     tagset = [
@@ -68,6 +70,8 @@ def build_lp(entry):
         f'type={wm_type}',
         f'url={url}',
         f'author={author}',
+        f'domain={domain}',
+        f'srcdomain={source_domain}',
         'influxdb_database=webmentions'
               ]
               
