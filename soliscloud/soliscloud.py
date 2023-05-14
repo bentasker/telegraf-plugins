@@ -53,9 +53,10 @@ import time
 
 class SolisCloud:
 
-    def __init__(self, config, session=False, debug=False):
+    def __init__(self, config, session=False, debug=False, mock=False):
         self.config = config
         self.debug = debug
+        self.mock = mock
         if session:
             self.session = session
         else:
@@ -210,6 +211,40 @@ class SolisCloud:
         
         self.printDebug(f'Built request - Headers {headers}, body: {req_body}, path: {req_path}')
         
+        if self.mock:
+            self.printDebug('Returning mocked response')
+            return {
+                "stationStatusVo" : {
+                    "normal" : 1,
+                    "offline" : 0,
+                    "fault" : 0,
+                },
+                "page" : {
+                "total" : 1,
+                "records" : [{
+                     # Note: The API doc says this is a long
+                     # but, the value returned to a similar call made by the cloud UI is a string
+                     "id" : 12345,
+                     "userId" : 7890,
+                     "capacity": 3.28,
+                     "capacityStr": "kWp",
+                     "installerId" : 4567,
+                     "installer": "ACME",
+                     "dataTimestamp" : "1683905510946",
+                     "dayEnergy" : 0,
+                     "dayEntergyStr" : "kWh",
+                     "dayIncome" : 0,
+                     "batteryTotalDischargeEnergy" : 0,
+                     "batteryTotalChargeEnergy" : 0,
+                     "condTxtD": "Cloudy",
+                     "inverterCount" : 0
+                     
+                    
+                    }]
+                }
+                
+            }
+        
         # Place the request
         r = self.postRequest(
             f"{self.config['api_url']}{req_path}",
@@ -273,8 +308,13 @@ def configFromEnv():
 if __name__ == "__main__":
     # TODO: Take from environment
     DEBUG = True
+    
+    # TODO: This should eventually be false
+    # but having mock responses is the only way to proceed until I've got
+    # API access
+    MOCK = True
     config = configFromEnv()    
-    soliscloud = SolisCloud(config, debug=DEBUG)
+    soliscloud = SolisCloud(config, debug=DEBUG, mock=MOCK)
     
     # These are the example values used in the API doc
     print(soliscloud.doAuth('2424', 
@@ -287,3 +327,4 @@ if __name__ == "__main__":
         )
 
     stations = soliscloud.fetchStationList()
+    print(stations)
