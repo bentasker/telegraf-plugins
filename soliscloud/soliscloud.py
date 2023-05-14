@@ -177,6 +177,79 @@ class SolisCloud:
         
         # Job done
         return auth_header
+    
+    
+    def fetchInverterList(self, station_id=False):
+        ''' Fetch the list of inverters.
+                
+        TODO: may want to implement iterating through pages at some 
+            point
+        '''
+        
+        # Construct the request body
+        req_body_d = {
+                "pageNo": 1,
+                "pageSize" : 100        
+            }
+        
+        if station_id:
+            req_body_d['stationId'] = station_id
+        
+        req_body = json.dumps(req_body_d)
+        req_path = "/v1/api/inverterList"
+        
+        # Construct an auth header
+        auth_header = self.doAuth(self.config['api_id'], self.config['api_secret'], req_path, req_body)
+        
+        # Construct headers dict
+        headers = {
+            "Authorization" : auth_header,
+            "Content-Type" : "application/json"
+            }
+        
+        self.printDebug(f'Built request - Headers {headers}, body: {req_body}, path: {req_path}')
+        
+        if self.mock:
+            self.printDebug('Returning mocked response')
+            return {
+                "stationStatusVo" : {
+                    "all" : 1,
+                    "normal" : 1,
+                    "offline" : 0,
+                    "fault" : 0,
+                },
+                "page" : {
+                    "total" : 1,
+                    "records" : [{
+                        # Note: The API doc says this is a long
+                        # but, the value returned to a similar call made by the cloud UI is a string
+                        "id" : 1234567890,
+                        "sn" : "serial1234",
+                        "stationId": 1234,
+                        "userId": 7890,
+                        "power" : "3.8",
+                        "powerStr" : "kWp",
+                        "etoday" : 15,
+                        "etodayStr": "kWh",
+                        "pac" : 10,
+                        "pacStr" : "kWh",
+                        # 1：Online 2：Offline 3：Alarm
+                        "state": 1,
+                        "dataTimeStamp" : 1234567891011,
+                        "collectorSn" : "181920",
+                        "series" : "Solis Acme Inverter",                        
+                        }]
+                }
+            }
+        
+        # Place the request
+        r = self.postRequest(
+            f"{self.config['api_url']}{req_path}",
+            headers,
+            req_body
+            )
+        
+        return r.json()
 
 
     def fetchStationList(self):
@@ -215,32 +288,33 @@ class SolisCloud:
             self.printDebug('Returning mocked response')
             return {
                 "stationStatusVo" : {
+                    "all" : 1,                    
                     "normal" : 1,
                     "offline" : 0,
                     "fault" : 0,
                 },
                 "page" : {
-                "total" : 1,
-                "records" : [{
-                     # Note: The API doc says this is a long
-                     # but, the value returned to a similar call made by the cloud UI is a string
-                     "id" : 12345,
-                     "userId" : 7890,
-                     "capacity": 3.28,
-                     "capacityStr": "kWp",
-                     "installerId" : 4567,
-                     "installer": "ACME",
-                     "dataTimestamp" : "1683905510946",
-                     "dayEnergy" : 0,
-                     "dayEntergyStr" : "kWh",
-                     "dayIncome" : 0,
-                     "batteryTotalDischargeEnergy" : 0,
-                     "batteryTotalChargeEnergy" : 0,
-                     "condTxtD": "Cloudy",
-                     "inverterCount" : 0
-                     
-                    
-                    }]
+                    "total" : 1,
+                    "records" : [{
+                        # Note: The API doc says this is a long
+                        # but, the value returned to a similar call made by the cloud UI is a string
+                        "id" : 12345,
+                        "userId" : 7890,
+                        "capacity": 3.28,
+                        "capacityStr": "kWp",
+                        "installerId" : 4567,
+                        "installer": "ACME",
+                        "dataTimestamp" : "1683905510946",
+                        "dayEnergy" : 0,
+                        "dayEntergyStr" : "kWh",
+                        "dayIncome" : 0,
+                        "batteryTotalDischargeEnergy" : 0,
+                        "batteryTotalChargeEnergy" : 0,
+                        "condTxtD": "Cloudy",
+                        "inverterCount" : 0
+                        
+                        
+                        }]
                 }
                 
             }
@@ -328,3 +402,22 @@ if __name__ == "__main__":
 
     stations = soliscloud.fetchStationList()
     print(stations)
+    if not stations or "page" not in stations or "records" not in stations['page']:
+        sys.exit(1)
+    
+    # Now get a list of inverters
+    for station in stations["page"]["records"]:
+        
+        # Get a list of inverters at the station
+        inverters = soliscloud.fetchInverterList(station_id=station['id'])
+        print(inverters)
+        
+        # The list detail doesn't tell us anything about batteries, so we need
+        # to iterate through and get details
+        if not inverters or "page" not in inverters or "records" not in inverters['page']:
+            # TODO: do we _really_ want to exit at this point, or should we return
+            # what we've got?
+            sys.exit(1)
+            
+
+            
