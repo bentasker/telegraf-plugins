@@ -53,8 +53,9 @@ import time
 
 class SolisCloud:
 
-    def __init__(self, config, session=False):
+    def __init__(self, config, session=False, debug=False):
         self.config = config
+        self.debug = debug
         if session:
             self.session = session
         else:
@@ -245,7 +246,7 @@ class SolisCloud:
         
 
     def printDebug(self, msg):
-        if DEBUG:
+        if self.debug:
             print(msg)
         
 
@@ -270,9 +271,10 @@ def configFromEnv():
 
 
 if __name__ == "__main__":
+    # TODO: Take from environment
     DEBUG = True
     config = configFromEnv()    
-    soliscloud = SolisCloud(config)
+    soliscloud = SolisCloud(config, debug=DEBUG)
     
     # These are the example values used in the API doc
     print(soliscloud.doAuth('2424', 
