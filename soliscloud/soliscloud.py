@@ -229,6 +229,8 @@ class SolisCloud:
                 "batteryTodayChargeEnergyStr" : "kWh",                
                 "batteryTodayDischargeEnergy" : 1,
                 "batteryTodayDischargeEnergyStr" : "kWh",
+                "model" : "5100",
+                "name" : "clive"
             }
         
         # Place the request
@@ -455,7 +457,8 @@ def extractBatteryStats(inverter, config):
         "inverter_id" : inverter['id'],
         "inverter_sn" : inverter['sn'],
         "station" : inverter['stationId'],
-        "userId" : inverter['userId']
+        "userId" : inverter['userId'],
+        "batteryType" : inverter["batteryType"].replace(" ","\\ ")
     }
     
     fields = {
@@ -488,6 +491,51 @@ def extractBatteryStats(inverter, config):
         ])
     return lp
     
+
+def extractInverterStats(inverter, config):
+    ''' Receive a dict of inverter detail and extract inverter details
+    
+    '''
+    # TODO: it's not clear whether the API will change units
+    # we should probably normalise our output if it does
+    
+    # tags first 
+    tags = {
+        "type" : "device",
+        "device_type" : "inverter",
+        "inverter_id" : inverter['id'],
+        "inverter_sn" : inverter['sn'],
+        "station" : inverter['stationId'],
+        "userId" : inverter['userId'],
+        "inverter_model" : inverter['model'].replace(" ","\ "),
+        "inverter_name" : inverter['name'].replace(" ","\ ")
+        
+    }
+    
+    fields = {
+        "state" : int(inverter['currentState']),
+        "energyToday" : float(inverter['eToday']),
+        "energyTodayStr" : f'"{inverter["eTodayStr"]}"',
+        "power_ac" : float(inverter['pac']),
+        "power_ac_str" : f'"{inverter["pacStr"]}"',
+        "temperature" : float(inverter['inverterTemperature']),
+        "readingAge" : f"{round(time.time() - int(inverter['dataTimestamp']))}i"
+        }
+    
+    # Construct the LP
+    lp1 = [config['measurement']]
+    for tag in tags:
+        lp1.append(f"{tag}={tags[tag]}")
+    
+    lp2 = []
+    for field in fields:
+        lp2.append(f"{field}={fields[field]}")
+        
+    lp = " ".join([
+        ','.join(lp1),
+        ','.join(lp2)
+        ])
+    return lp    
     
 
 if __name__ == "__main__":
@@ -538,5 +586,7 @@ if __name__ == "__main__":
             inverter_details = soliscloud.fetchInverterDetail(inverter['id'])
             print(inverter_details)
             lp = extractBatteryStats(inverter_details, config)
+            inverter_lp = extractInverterStats(inverter_details, config)
+            
             lp_buffer.append(lp)
-            print(lp)
+            lp_buffer.append(inverter_lp)
