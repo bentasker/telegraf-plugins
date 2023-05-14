@@ -44,6 +44,19 @@ import datetime
 import base64
 import hashlib
 import hmac
+import json
+import os
+import requests
+
+def configFromEnv():
+    ''' Build a dict of configuration settings based on environment variables
+    '''
+    return {
+        "api_id" : int(os.getenv("API_ID", 1234)),
+        "api_secret" : os.getenv("API_SECRET", "abcde"),
+        "api_url" : os.getenv("API_URL", "https://tobeconfirmed")
+        }
+    
 
 def createHMAC(signstr,secret,algo):
     ''' Create a HMAC of signstr using secret and algo
@@ -112,6 +125,46 @@ def doAuth(key_id, secret, req_path, req_body, method="POST", content_type="appl
     return auth_header
 
 
+def fetchStationList(config, session):
+    ''' Fetch the list of stations.
+    
+    In the Solicloud UI these are referred to as plants 
+    Basically, the site at which devices are deployed.
+    
+    So, if you had multiple inverters in one location this
+    would return the total values
+    
+    TODO: may want to implement iterating through pages at some 
+          point
+    '''
+    
+    # Construct the request body
+    req_body_d = {
+            "pageNo": 1,
+            "pageSize" : 100        
+        }
+    req_body = json.dumps(req_body_d)
+    req_path = "/v1/api/userStationList"
+    
+    # Construct an auth header
+    auth_header = doAuth(config['api_id'], config['api_secret'], req_path, req_body)
+    
+    # Construct headers dict
+    headers = {
+        "Authorization" : auth_header,
+        "Content-Type" : "application/json"
+        }
+    
+    # Place the request
+    r = session.post(
+        url = f"{config['api_url']}{req_path}", 
+        headers = headers,
+        data = req_body
+        )
+    
+    return r.json()
+
+    
 def printDebug(msg):
     if DEBUG:
         print(msg)
@@ -128,3 +181,7 @@ if __name__ == "__main__":
                 content_type="application/json", 
                 datestring='Fri, 26 Jul 2019 06:00:46 GMT')
         )
+
+    session = requests.session()
+    config = configFromEnv()
+    stations = fetchStationList(config, session)
