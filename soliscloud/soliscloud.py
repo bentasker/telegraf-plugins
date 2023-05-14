@@ -179,6 +179,67 @@ class SolisCloud:
         return auth_header
     
     
+    def fetchInverterDetail(self, inverter_id):
+        ''' Fetch detail on a specific inverter
+        
+        '''
+        # Construct the request body
+        req_body_d = {
+                "id": inverter_id  
+            }
+               
+        req_body = json.dumps(req_body_d)
+        req_path = "/v1/api/inverterDetail"
+        
+        # Construct an auth header
+        auth_header = self.doAuth(self.config['api_id'], self.config['api_secret'], req_path, req_body)
+        
+        # Construct headers dict
+        headers = {
+            "Authorization" : auth_header,
+            "Content-Type" : "application/json"
+            }
+        
+        self.printDebug(f'Built request - Headers {headers}, body: {req_body}, path: {req_path}')
+        
+        if self.mock:
+            self.printDebug('Returning mocked response')
+            return {
+                "id" : inverter_id,
+                "sn" : "serial1234",
+                "stationId" : 1234,
+                "userId" : 7890,
+                "collectorName" : "Soliscloud Acme collector",
+                "currentState" : 1,
+                "eToday" : 3.5,
+                "eTodayStr" : "kWh",
+                "pac" : 4,
+                "pacStr" : "kWh",
+                "dataTimestamp" : 123456789101112,
+                "inverterTemperature" : 20,
+                "batteryPower" : 7,
+                "batteryPowerStr" : "kWh",
+                "batteryPowerPec" : 50,
+                "batteryVoltage" : 14,
+                "batteryVoltageStr" : "V",
+                "batteryCurrent" : 3,
+                "batteryCurrentStr" : "A",
+                "batteryTodayChargeEnergy" : 3,
+                "batteryTodayChargeEnergy" : "kWh",                
+                "batteryTodayDischargeEnergy" : 1,
+                "batteryTodayDischargeEnergy" : "kWh",
+            }
+        
+        # Place the request
+        r = self.postRequest(
+            f"{self.config['api_url']}{req_path}",
+            headers,
+            req_body
+            )
+        
+        return r.json()
+    
+        
     def fetchInverterList(self, station_id=False):
         ''' Fetch the list of inverters.
                 
@@ -419,5 +480,6 @@ if __name__ == "__main__":
             # what we've got?
             sys.exit(1)
             
-
-            
+        for inverter in inverters['page']['records']:
+            inverter_details = soliscloud.fetchInverterDetail(inverter['id'])
+            print(inverter_details)
