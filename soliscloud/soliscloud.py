@@ -217,6 +217,7 @@ class SolisCloud:
                 "pacStr" : "kWh",
                 "dataTimestamp" : 123456789101112,
                 "inverterTemperature" : 20,
+                "batteryType" : "Solis Acme battery",
                 "batteryPower" : 7,
                 "batteryPowerStr" : "kWh",
                 "batteryPowerPec" : 50,
@@ -225,9 +226,9 @@ class SolisCloud:
                 "batteryCurrent" : 3,
                 "batteryCurrentStr" : "A",
                 "batteryTodayChargeEnergy" : 3,
-                "batteryTodayChargeEnergy" : "kWh",                
+                "batteryTodayChargeEnergyStr" : "kWh",                
                 "batteryTodayDischargeEnergy" : 1,
-                "batteryTodayDischargeEnergy" : "kWh",
+                "batteryTodayDischargeEnergyStr" : "kWh",
             }
         
         # Place the request
@@ -435,10 +436,59 @@ def configFromEnv():
         # This is a safety net - maximum seconds to wait if we believe we'll
         # hit the rate limit. As long as this is higher than api_rate_limit it
         # should never actually be hit unless there's a bug.
-        "max_ratelimit_wait" : int(os.getenv("API_RATE_LIMIT_MAXWAIT", 8))
+        "max_ratelimit_wait" : int(os.getenv("API_RATE_LIMIT_MAXWAIT", 8)),
+        "measurement" : os.getenv("MEASUREMENT", "power_watts")
         }
 
-
+def extractBatteryStats(inverter, config):
+    ''' Take inverter details and construct line protocol relating to the attached battery
+    
+    '''
+    
+    # TODO: it's not clear whether the API will change units
+    # we should probably normalise our output if it does
+    
+    # tags first 
+    tags = {
+        "type" : "device",
+        "device_type" : "battery",
+        "inverter_id" : inverter['id'],
+        "inverter_sn" : inverter['sn'],
+        "station" : inverter['stationId'],
+        "userId" : inverter['userId']
+    }
+    
+    fields = {
+        "batteryPower" : float(inverter['batteryPower']),
+        "batteryPowerUnit" : f'"{inverter["batteryPowerStr"]}"',
+        "batteryPowerPerc" : float(inverter['batteryPowerPec']),
+        "batteryVoltage" : float(inverter['batteryPower']),
+        "batteryVoltageStr" : f'"{inverter["batteryVoltageStr"]}"',
+        "batteryCurrent" : float(inverter['batteryCurrent']),
+        "batteryCurrentStr" : f'"{inverter["batteryCurrentStr"]}"',
+        "batteryTodayChargeEnergy": float(inverter['batteryTodayChargeEnergy']),
+        "batteryTodayChargeEnergyStr": f'"{inverter["batteryTodayChargeEnergyStr"]}"',
+        "batteryTodayDischargeEnergy": float(inverter['batteryTodayDischargeEnergy']),
+        "batteryTodayDischargeEnergyStr": f'"{inverter["batteryTodayDischargeEnergyStr"]}"',
+        "readingAge" : f"{round(time.time() - int(inverter['dataTimestamp']))}i"
+        }
+    
+    # Construct the LP
+    lp1 = [config['measurement']]
+    for tag in tags:
+        lp1.append(f"{tag}={tags[tag]}")
+    
+    lp2 = []
+    for field in fields:
+        lp2.append(f"{field}={fields[field]}")
+        
+    lp = " ".join([
+        ','.join(lp1),
+        ','.join(lp2)
+        ])
+    return lp
+    
+    
 
 if __name__ == "__main__":
     # TODO: Take from environment
@@ -466,6 +516,10 @@ if __name__ == "__main__":
     if not stations or "page" not in stations or "records" not in stations['page']:
         sys.exit(1)
     
+    
+    # Line protocol will be written into here as it's generated
+    lp_buffer = []
+    
     # Now get a list of inverters
     for station in stations["page"]["records"]:
         
@@ -483,3 +537,6 @@ if __name__ == "__main__":
         for inverter in inverters['page']['records']:
             inverter_details = soliscloud.fetchInverterDetail(inverter['id'])
             print(inverter_details)
+            lp = extractBatteryStats(inverter_details, config)
+            lp_buffer.append(lp)
+            print(lp)
