@@ -47,6 +47,8 @@ import hmac
 import json
 import os
 import requests
+import sys
+import time
 
 
 class SolisCloud:
@@ -57,6 +59,56 @@ class SolisCloud:
             self.session = session
         else:
             self.session = requests.session()
+
+        # Tracking information for rate limit observance
+        self.ratelimit = {
+            "requests" : 0,
+            "lastreset" : time.time()
+            }
+
+
+    def checkRateLimit(self):
+        ''' Check how many requests we've made and when
+        in order to assess whether we're at risk of hitting
+        service rate limits.
+        
+        The API doc says:
+        
+            Note: The calling frequency of all interfaces is limited to three times every five seconds for the same IP
+        
+        It does not clarify whether we'll get a HTTP 429 or some other status
+        '''
+        
+        # What we want to check is
+        #
+        # Was the last reset more than 5 seconds ago
+        # Have there been >= 3 requests?
+        #
+        now = time.time()
+        # When was the last quota reset?
+        if (now - self.ratelimit['lastreset']) >= 5:
+            self.printDebug(f'RATE_LIMIT_CHECK: Last reset was more than 5 seconds ago')
+            # Should be fine, reset the limit
+            self.ratelimit['lastreset'] = now
+            self.ratelimit['requests'] = 1
+            return True
+        
+        # If we reached this point, we're within the n second boundary
+        # check how many requests have been placed
+        if (self.ratelimit['requests'] + 1) > self.config['api_rate_limit']:
+            self.printDebug(f'RATE_LIMIT_CHECK: Breach - too many requests')
+            # We'd be breaching the rate limit
+            #
+            # We don't increment the counter because we're
+            # preventing the request from being sent yet
+            return False
+        
+        # So we're within the time bounds but haven't yet hit the maximum number of
+        # requests. Increment the counter and approve the request
+        self.printDebug(f'RATE_LIMIT_CHECK: Request approved')
+        self.ratelimit['requests'] += 1
+        return True
+
 
     def createHMAC(self, signstr, secret, algo):
         ''' Create a HMAC of signstr using secret and algo
@@ -158,13 +210,39 @@ class SolisCloud:
         self.printDebug(f'Built request - Headers {headers}, body: {req_body}, path: {req_path}')
         
         # Place the request
-        r = self.session.post(
-            url = f"{self.config['api_url']}{req_path}", 
-            headers = headers,
-            data = req_body
+        r = self.postRequest(
+            f"{self.config['api_url']}{req_path}",
+            headers,
+            req_body
             )
         
         return r.json()
+
+
+    def postRequest(self, url, headers, data):
+        ''' Place a request to the API, taking into account
+         internal rate-limit tracking
+        '''
+        
+        # Check whether this request would hit the service's published rate-limit
+        x = 0
+        while True:
+            if self.checkRateLimit():
+                # We're below the rate limit, break out
+                # so the request can be placed
+                break
+                
+            # Otherwise, this request would hit the rate limit wait a bit and try again
+            x += 1
+            time.sleep(1)
+            if x > self.config("max_ratelimit_wait"):
+                self.printDebug("Max ratelimit wait exceeded - something's gone wrong, please report it")
+                sys.exit(1)
+            continue
+        
+        # Place the request
+        return self.session.post(url, headers, data)
+        
 
     def printDebug(self, msg):
         if DEBUG:
@@ -180,7 +258,13 @@ def configFromEnv():
     return {
         "api_id" : int(os.getenv("API_ID", 1234)),
         "api_secret" : os.getenv("API_SECRET", "abcde"),
-        "api_url" : os.getenv("API_URL", "https://tobeconfirmed")
+        "api_url" : os.getenv("API_URL", "https://tobeconfirmed"),
+        # Max number of requests per 5 seconds
+        "api_rate_limit" : int(os.getenv("API_RATE_LIMIT", 3)),
+        # This is a safety net - maximum seconds to wait if we believe we'll
+        # hit the rate limit. As long as this is higher than api_rate_limit it
+        # should never actually be hit unless there's a bug.
+        "max_ratelimit_wait" : int(os.getenv("API_RATE_LIMIT_MAXWAIT", 8))
         }
 
 
