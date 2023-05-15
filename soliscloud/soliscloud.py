@@ -156,9 +156,8 @@ class SolisCloud:
             datestring = d.strftime('%a, %d %b %Y %H:%M:%S GMT')
         
         # Construct the string that we need to sign
-        # The entries should be seperated by \n - the API doesn't want
-        # literal newlines (presumably it evaluates them on read)
-        signstr = '\\n'.join([method,
+        # The entries should be seperated by a newline
+        signstr = '\n'.join([method,
                 md5_str,
                 content_type,
                 datestring,
