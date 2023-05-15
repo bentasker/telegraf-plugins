@@ -570,7 +570,7 @@ if __name__ == "__main__":
     # TODO: This should eventually be false
     # but having mock responses is the only way to proceed until I've got
     # API access
-    MOCK = True
+    MOCK = False
     config = configFromEnv()    
     soliscloud = SolisCloud(config, debug=DEBUG, mock=MOCK)
     
