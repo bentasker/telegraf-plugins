@@ -271,33 +271,35 @@ class SolisCloud:
         if self.mock:
             self.printDebug('Returning mocked response')
             return {
-                "stationStatusVo" : {
-                    "all" : 1,
-                    "normal" : 1,
-                    "offline" : 0,
-                    "fault" : 0,
-                },
-                "page" : {
-                    "total" : 1,
-                    "records" : [{
-                        # Note: The API doc says this is a long
-                        # but, the value returned to a similar call made by the cloud UI is a string
-                        "id" : 1234567890,
-                        "sn" : "serial1234",
-                        "stationId": 1234,
-                        "userId": 7890,
-                        "power" : "3.8",
-                        "powerStr" : "kWp",
-                        "etoday" : 15,
-                        "etodayStr": "kWh",
-                        "pac" : 10,
-                        "pacStr" : "kWh",
-                        # 1：Online 2：Offline 3：Alarm
-                        "state": 1,
-                        "dataTimeStamp" : 1234567891011,
-                        "collectorSn" : "181920",
-                        "series" : "Solis Acme Inverter",                        
-                        }]
+                "data" : {
+                    "stationStatusVo" : {
+                        "all" : 1,
+                        "normal" : 1,
+                        "offline" : 0,
+                        "fault" : 0,
+                    },
+                    "page" : {
+                        "total" : 1,
+                        "records" : [{
+                            # Note: The API doc says this is a long
+                            # but, the value returned to a similar call made by the cloud UI is a string
+                            "id" : 1234567890,
+                            "sn" : "serial1234",
+                            "stationId": 1234,
+                            "userId": 7890,
+                            "power" : "3.8",
+                            "powerStr" : "kWp",
+                            "etoday" : 15,
+                            "etodayStr": "kWh",
+                            "pac" : 10,
+                            "pacStr" : "kWh",
+                            # 1：Online 2：Offline 3：Alarm
+                            "state": 1,
+                            "dataTimeStamp" : 1234567891011,
+                            "collectorSn" : "181920",
+                            "series" : "Solis Acme Inverter",                        
+                            }]
+                    }
                 }
             }
         
@@ -340,36 +342,41 @@ class SolisCloud:
         if self.mock:
             self.printDebug('Returning mocked response')
             return {
-                "stationStatusVo" : {
-                    "all" : 1,                    
-                    "normal" : 1,
-                    "offline" : 0,
-                    "fault" : 0,
-                },
-                "page" : {
-                    "total" : 1,
-                    "records" : [{
-                        # Note: The API doc says this is a long
-                        # but, the value returned to a similar call made by the cloud UI is a string
-                        "id" : 12345,
-                        "userId" : 7890,
-                        "capacity": 3.28,
-                        "capacityStr": "kWp",
-                        "installerId" : 4567,
-                        "installer": "ACME",
-                        "dataTimestamp" : "1683905510946",
-                        "dayEnergy" : 0,
-                        "dayEnergyStr" : "kWh",
-                        "dayIncome" : 0,
-                        "batteryTotalDischargeEnergy" : 0,
-                        "batteryTotalChargeEnergy" : 0,
-                        "condTxtD": "Cloudy",
-                        "inverterCount" : 0
-                        
-                        
-                        }]
+                "success" : True,
+                "code" : '0',
+                "msg" : "success",
+                "data" : {
+                    "stationStatusVo" : {
+                        "all" : 1,                    
+                        "normal" : 1,
+                        "offline" : 0,
+                        "fault" : 0,
+                        "building" : 0,
+                        "mppt" : 0
+                    },
+                    "page" : {
+                        "total" : 1,
+                        "records" : [{
+                            # Note: The API doc says this is a long
+                            # but, the value returned to a similar call made by the cloud UI is a string
+                            "id" : "12345",
+                            "userId" : 7890,
+                            "capacity": 3.28,
+                            "capacityStr": "kWp",
+                            "capacityPercent": 0.0,
+                            "installerId" : 4567,
+                            "installer": "ACME",
+                            "dataTimestamp" : "1683905510946",
+                            "dayEnergy" : 0.0,
+                            "dayEnergyStr" : "kWh",
+                            "dayIncome" : 0.0,
+                            "batteryTotalDischargeEnergy" : 0.0,
+                            "batteryTotalChargeEnergy" : 0.0,
+                            "condTxtD": "Cloudy",
+                            "inverterCount" : 0
+                            }]
+                    }
                 }
-                
             }
         
         # Place the request
@@ -559,7 +566,7 @@ if __name__ == "__main__":
     # TODO: This should eventually be false
     # but having mock responses is the only way to proceed until I've got
     # API access
-    MOCK = False
+    MOCK = True
     config = configFromEnv()    
     soliscloud = SolisCloud(config, debug=DEBUG, mock=MOCK)
     
@@ -575,7 +582,8 @@ if __name__ == "__main__":
 
     stations = soliscloud.fetchStationList()
     print(stations)
-    if not stations or "page" not in stations or "records" not in stations['page']:
+    # TODO: lets not do this:
+    if not stations or "data" not in stations or "page" not in stations['data'] or "records" not in stations['data']['page']:
         sys.exit(1)
     
     
@@ -583,7 +591,7 @@ if __name__ == "__main__":
     lp_buffer = []
     
     # Now get a list of inverters
-    for station in stations["page"]["records"]:
+    for station in stations["data"]["page"]["records"]:
         
         # Get a list of inverters at the station
         inverters = soliscloud.fetchInverterList(station_id=station['id'])
@@ -596,7 +604,7 @@ if __name__ == "__main__":
             # what we've got?
             sys.exit(1)
             
-        for inverter in inverters['page']['records']:
+        for inverter in inverters['data']['page']['records']:
             inverter_details = soliscloud.fetchInverterDetail(inverter['id'])
             print(inverter_details)
             lp = extractBatteryStats(inverter_details, config)
@@ -604,3 +612,5 @@ if __name__ == "__main__":
             
             lp_buffer.append(lp)
             lp_buffer.append(inverter_lp)
+
+print(lp_buffer)
