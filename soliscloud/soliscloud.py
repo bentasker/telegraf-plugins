@@ -166,7 +166,7 @@ class SolisCloud:
                 ])
 
         self.printDebug(f"Signstr: {signstr}")
-            
+        
         # HMAC and then base64 it
         hmacstr = self.createHMAC(signstr, secret, 'sha1')
         signature = base64.b64encode(hmacstr).decode()
@@ -175,8 +175,16 @@ class SolisCloud:
         auth_header = f"API {key_id}:{signature}"
         self.printDebug(f"Calculated Auth header: {auth_header}")
         
-        # Job done
-        return auth_header
+        
+        # build headers
+        headers = {
+            "Content-Type" : content_type,
+            "Content-MD5" : md5_str,
+            "Date" : datestring,
+            "Authorization" : auth_header
+            }
+        
+        return headers
     
     
     def fetchInverterDetail(self, inverter_id):
@@ -192,14 +200,8 @@ class SolisCloud:
         req_path = "/v1/api/inverterDetail"
         
         # Construct an auth header
-        auth_header = self.doAuth(self.config['api_id'], self.config['api_secret'], req_path, req_body)
-        
-        # Construct headers dict
-        headers = {
-            "Authorization" : auth_header,
-            "Content-Type" : "application/json"
-            }
-        
+        headers = self.doAuth(self.config['api_id'], self.config['api_secret'], req_path, req_body)
+                
         self.printDebug(f'Built request - Headers {headers}, body: {req_body}, path: {req_path}')
         
         if self.mock:
@@ -263,13 +265,7 @@ class SolisCloud:
         req_path = "/v1/api/inverterList"
         
         # Construct an auth header
-        auth_header = self.doAuth(self.config['api_id'], self.config['api_secret'], req_path, req_body)
-        
-        # Construct headers dict
-        headers = {
-            "Authorization" : auth_header,
-            "Content-Type" : "application/json"
-            }
+        headers = self.doAuth(self.config['api_id'], self.config['api_secret'], req_path, req_body)
         
         self.printDebug(f'Built request - Headers {headers}, body: {req_body}, path: {req_path}')
         
@@ -338,14 +334,8 @@ class SolisCloud:
         req_path = "/v1/api/userStationList"
         
         # Construct an auth header
-        auth_header = self.doAuth(self.config['api_id'], self.config['api_secret'], req_path, req_body)
-        
-        # Construct headers dict
-        headers = {
-            "Authorization" : auth_header,
-            "Content-Type" : "application/json"
-            }
-        
+        headers = self.doAuth(self.config['api_id'], self.config['api_secret'], req_path, req_body)
+                
         self.printDebug(f'Built request - Headers {headers}, body: {req_body}, path: {req_path}')
         
         if self.mock:
@@ -415,7 +405,7 @@ class SolisCloud:
             continue
         
         # Place the request
-        return self.session.post(url, headers, data)
+        return self.session.post(url=url, headers=headers, data=data)
         
 
     def printDebug(self, msg):
