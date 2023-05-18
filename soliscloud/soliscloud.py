@@ -206,32 +206,37 @@ class SolisCloud:
         if self.mock:
             self.printDebug('Returning mocked response')
             return {
-                "id" : inverter_id,
-                "sn" : "serial1234",
-                "stationId" : 1234,
-                "userId" : 7890,
-                "collectorName" : "Soliscloud Acme collector",
-                "currentState" : 1,
-                "eToday" : 3.5,
-                "eTodayStr" : "kWh",
-                "pac" : 4,
-                "pacStr" : "kWh",
-                "dataTimestamp" : 123456789101112,
-                "inverterTemperature" : 20,
-                "batteryType" : "Solis Acme battery",
-                "batteryPower" : 7,
-                "batteryPowerStr" : "kWh",
-                "batteryPowerPec" : 50,
-                "batteryVoltage" : 14,
-                "batteryVoltageStr" : "V",
-                "batteryCurrent" : 3,
-                "batteryCurrentStr" : "A",
-                "batteryTodayChargeEnergy" : 3,
-                "batteryTodayChargeEnergyStr" : "kWh",                
-                "batteryTodayDischargeEnergy" : 1,
-                "batteryTodayDischargeEnergyStr" : "kWh",
-                "model" : "5100",
-                "name" : "clive"
+                "success" : True,
+                "code" : "0",
+                "msg" : "successful",
+                "data" : {                
+                    "id" : inverter_id,
+                    "sn" : "serial1234",
+                    "stationId" : 1234,
+                    "userId" : 7890,
+                    "collectorName" : "Soliscloud Acme collector",
+                    "currentState" : 1,
+                    "eToday" : 3.5,
+                    "eTodayStr" : "kWh",
+                    "pac" : 4,
+                    "pacStr" : "kWh",
+                    "dataTimestamp" : 123456789101112,
+                    "inverterTemperature" : 20,
+                    "batteryType" : "Solis Acme battery",
+                    "batteryPower" : 7,
+                    "batteryPowerStr" : "kWh",
+                    "batteryPowerPec" : 50,
+                    "batteryVoltage" : 14,
+                    "batteryVoltageStr" : "V",
+                    "batteryCurrent" : 3,
+                    "batteryCurrentStr" : "A",
+                    "batteryTodayChargeEnergy" : 3,
+                    "batteryTodayChargeEnergyStr" : "kWh",                
+                    "batteryTodayDischargeEnergy" : 1,
+                    "batteryTodayDischargeEnergyStr" : "kWh",
+                    "model" : "5100",
+                    "name" : "clive"
+                }
             }
         
         # Place the request
@@ -271,6 +276,9 @@ class SolisCloud:
         if self.mock:
             self.printDebug('Returning mocked response')
             return {
+                "success" : True,
+                "code" : "0",
+                "msg" : "successful",
                 "data" : {
                     "stationStatusVo" : {
                         "all" : 1,
@@ -599,13 +607,13 @@ if __name__ == "__main__":
         
         # The list detail doesn't tell us anything about batteries, so we need
         # to iterate through and get details
-        if not inverters or "page" not in inverters or "records" not in inverters['page']:
+        if not inverters or "data" not in inverters or "page" not in inverters['data'] or "records" not in inverters['data']['page']:
             # TODO: do we _really_ want to exit at this point, or should we return
             # what we've got?
             sys.exit(1)
             
         for inverter in inverters['data']['page']['records']:
-            inverter_details = soliscloud.fetchInverterDetail(inverter['id'])
+            inverter_details = soliscloud.fetchInverterDetail(inverter['id'])['data']
             print(inverter_details)
             lp = extractBatteryStats(inverter_details, config)
             inverter_lp = extractInverterStats(inverter_details, config)
