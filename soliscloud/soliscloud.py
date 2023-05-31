@@ -577,18 +577,8 @@ if __name__ == "__main__":
     config = configFromEnv()    
     soliscloud = SolisCloud(config, debug=DEBUG, mock=MOCK)
     
-    # These are the example values used in the API doc
-    print(soliscloud.doAuth('2424', 
-                '668018254', 
-                '/v1/api/userStationList', 
-                '{"pageNo":1,"pageSize":10}', 
-                method="POST", 
-                content_type="application/json", 
-                datestring='Fri, 26 Jul 2019 06:00:46 GMT')
-        )
-    
     stations = soliscloud.fetchStationList()
-    print(stations)
+
     # TODO: lets not do this:
     if not stations or "data" not in stations or "page" not in stations['data'] or "records" not in stations['data']['page']:
         sys.exit(1)
@@ -602,7 +592,6 @@ if __name__ == "__main__":
         
         # Get a list of inverters at the station
         inverters = soliscloud.fetchInverterList(station_id=station['id'])
-        print(inverters)
         
         # The list detail doesn't tell us anything about batteries, so we need
         # to iterate through and get details
@@ -613,11 +602,11 @@ if __name__ == "__main__":
             
         for inverter in inverters['data']['page']['records']:
             inverter_details = soliscloud.fetchInverterDetail(inverter['id'])['data']
-            print(inverter_details)
             lp = extractBatteryStats(inverter_details, config)
             inverter_lp = extractInverterStats(inverter_details, config)
             
             lp_buffer.append(lp)
             lp_buffer.append(inverter_lp)
 
-print(lp_buffer)
+for line in lp_buffer:
+    print(line)
