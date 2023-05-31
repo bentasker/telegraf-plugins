@@ -450,7 +450,7 @@ def extractBatteryStats(inverter, config):
     ''' Take inverter details and construct line protocol relating to the attached battery
     
     '''
-    
+
     # TODO: it's not clear whether the API will change units
     # we should probably normalise our output if it does
     
@@ -471,8 +471,8 @@ def extractBatteryStats(inverter, config):
         "batteryPowerPerc" : float(inverter['batteryPowerPec']),
         "batteryVoltage" : float(inverter['batteryPower']),
         "batteryVoltageStr" : f'"{inverter["batteryVoltageStr"]}"',
-        "batteryCurrent" : float(inverter['batteryCurrent']),
-        "batteryCurrentStr" : f'"{inverter["batteryCurrentStr"]}"',
+        "batteryCurrent" : float(inverter['storageBatteryCurrent']),
+        "batteryCurrentStr" : f'"{inverter["storageBatteryCurrentStr"]}"',
         "batteryTodayChargeEnergy": float(inverter['batteryTodayChargeEnergy']),
         "batteryTodayChargeEnergyStr": f'"{inverter["batteryTodayChargeEnergyStr"]}"',
         "batteryTodayDischargeEnergy": float(inverter['batteryTodayDischargeEnergy']),
@@ -502,7 +502,7 @@ def extractInverterStats(inverter, config):
     '''
     # TODO: it's not clear whether the API will change units
     # we should probably normalise our output if it does
-    
+        
     # tags first 
     tags = {
         "type" : "device",
@@ -511,8 +511,7 @@ def extractInverterStats(inverter, config):
         "inverter_sn" : inverter['sn'],
         "station" : inverter['stationId'],
         "userId" : inverter['userId'],
-        "inverter_model" : inverter['model'].replace(" ","\ "),
-        "inverter_name" : inverter['name'].replace(" ","\ ")
+        "inverter_model" : inverter['model'].replace(" ","\ ")
         
     }
     
