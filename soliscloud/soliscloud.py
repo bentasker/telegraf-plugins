@@ -436,7 +436,7 @@ def configFromEnv():
     return {
         "api_id" : int(os.getenv("API_ID", 1234)),
         "api_secret" : os.getenv("API_SECRET", "abcde"),
-        "api_url" : os.getenv("API_URL", "https://tobeconfirmed"),
+        "api_url" : os.getenv("API_URL", "https://tobeconfirmed").strip('/'),
         # Max number of requests per 5 seconds
         "api_rate_limit" : int(os.getenv("API_RATE_LIMIT", 3)),
         # This is a safety net - maximum seconds to wait if we believe we'll
