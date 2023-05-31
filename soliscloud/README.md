@@ -30,6 +30,28 @@ Once API access has been enabled for your account, instructions will be given on
 
 
 
+----
+
+### Telegraf Config
+
+The API details can be passed via the `environment` configuration option
+
+```ini
+[[inputs.exec]]
+    commands = [
+        "/usr/local/src/telegraf_plugins/soliscloud.py",
+    ]
+    timeout = "60s"
+    interval = "5m"
+    name_suffix = ""
+    data_format = "influx"
+    environment = [
+    "API_ID=",
+    "API_SECRET=",
+    "API_URL=https://www.soliscloud.com:13333"    
+    ]
+```
+
 
 ----
 
