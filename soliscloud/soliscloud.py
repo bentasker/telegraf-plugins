@@ -443,7 +443,7 @@ def configFromEnv():
         # hit the rate limit. As long as this is higher than api_rate_limit it
         # should never actually be hit unless there's a bug.
         "max_ratelimit_wait" : int(os.getenv("API_RATE_LIMIT_MAXWAIT", 8)),
-        "measurement" : os.getenv("MEASUREMENT", "power_watts")
+        "measurement" : os.getenv("MEASUREMENT", "solar_inverter")
         }
 
 def extractBatteryStats(inverter, config):
