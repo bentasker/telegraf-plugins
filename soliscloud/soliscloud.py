@@ -467,7 +467,7 @@ def extractBatteryStats(inverter, config):
     
     fields = {
         "batteryPowerUnit" : f'"{inverter["batteryPowerStr"]}"',
-        "batteryPowerPerc" : float(inverter['batteryPowerPec']),
+        "batteryPowerPerc" : float(inverter['batteryCapacitySoc']),
         "batteryCurrentStr" : f'"{inverter["storageBatteryCurrentStr"]}"',
         "batteryTodayChargeEnergy": float(inverter['batteryTodayChargeEnergy']),
         "batteryTodayChargeEnergyStr": f'"{inverter["batteryTodayChargeEnergyStr"]}"',
