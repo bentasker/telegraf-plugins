@@ -466,24 +466,29 @@ def extractBatteryStats(inverter, config):
     }
     
     fields = {
-        "batteryPower" : float(inverter['batteryPower']),
         "batteryPowerUnit" : f'"{inverter["batteryPowerStr"]}"',
         "batteryPowerPerc" : float(inverter['batteryPowerPec']),
-        "batteryVoltage" : float(inverter['batteryPower']),
-        "batteryVoltageStr" : f'"{inverter["batteryVoltageStr"]}"',
-        "batteryCurrent" : float(inverter['storageBatteryCurrent']),
         "batteryCurrentStr" : f'"{inverter["storageBatteryCurrentStr"]}"',
         "batteryTodayChargeEnergy": float(inverter['batteryTodayChargeEnergy']),
         "batteryTodayChargeEnergyStr": f'"{inverter["batteryTodayChargeEnergyStr"]}"',
         "batteryTodayDischargeEnergy": float(inverter['batteryTodayDischargeEnergy']),
         "batteryTodayDischargeEnergyStr": f'"{inverter["batteryTodayDischargeEnergyStr"]}"',
-        "readingAge" : f"{round(time.time() - int(inverter['dataTimestamp']))}i",
+        "readingAge" : f"{round(time.time() - (int(inverter['dataTimestamp'])/1000))}i",
 
         }
     
-    tags["batteryState"] = "charging"
-    if fields["batteryPower"] < 0:
+
+    
+    if inverter["batteryPower"] < 0:
         tags["batteryState"] = "discharging"
+        fields["batteryDischargeRate"] = float(inverter['batteryPower']) * -1
+        fields["batteryChargeRate"] = float(0)
+        fields["batteryCurrent"] =  float(inverter['storageBatteryCurrent']) * -1
+    else:
+        tags["batteryState"] = "charging"
+        fields["batteryChargeRate"] = float(inverter['batteryPower'])
+        fields["batteryDischargeRate"] = float(0)
+        fields["batteryCurrent"] =  float(inverter['storageBatteryCurrent'])
         
     
     # Construct the LP
@@ -523,13 +528,25 @@ def extractInverterStats(inverter, config):
     
     fields = {
         "state" : int(inverter['currentState']),
-        "energyToday" : float(inverter['eToday']),
-        "energyTodayStr" : f'"{inverter["eTodayStr"]}"',
+        "todayYield" : float(inverter['eToday']),
+        "todayYieldStr" : f'"{inverter["eTodayStr"]}"',
         "power_ac" : float(inverter['pac']),
         "power_ac_str" : f'"{inverter["pacStr"]}"',
-        "temperature" : float(inverter['inverterTemperature']),
-        "readingAge" : f"{round(time.time() - int(inverter['dataTimestamp']))}i"
+        "temperature" : float(inverter['inverterTemperature']), 
+        "gridBuyToday" : float(inverter['gridPurchasedTodayEnergy']),
+        "gridSellToday" : float(inverter['gridSellTodayEnergy']),
+        "batterySupplyToday" : float(inverter['batteryTodayDischargeEnergy']),
+        "batteryChargeToday" : float(inverter['batteryTodayChargeEnergy']),
+        "readingAge" : f"{round(time.time() - (int(inverter['dataTimestamp']) / 1000))}i"
         }
+    
+    
+    for i in range(32):
+        k = f"pow{i}"
+        if k in inverter:
+            fields[f"panel_{i}"] = float(inverter[f"pow{i}"])    
+
+
     
     # Construct the LP
     lp1 = [config['measurement']]
@@ -607,6 +624,7 @@ if __name__ == "__main__":
             sys.exit(1)
             
         for inverter in inverters['data']['page']['records']:
+            print(inverter)
             inverter_details = soliscloud.fetchInverterDetail(inverter['id'])['data']
             lp = extractBatteryStats(inverter_details, config)
             inverter_lp = extractInverterStats(inverter_details, config)
