@@ -462,7 +462,8 @@ def extractBatteryStats(inverter, config):
         "inverter_sn" : inverter['sn'],
         "station" : inverter['stationId'],
         "userId" : inverter['userId'],
-        "batteryType" : inverter["batteryType"].replace(" ","\\ ")
+        "batteryType" : inverter["batteryType"].replace(" ","\\ "),
+        "influxdb_database" : "Systemstats"
     }
     
     fields = {
@@ -522,7 +523,8 @@ def extractInverterStats(inverter, config):
         "inverter_sn" : inverter['sn'],
         "station" : inverter['stationId'],
         "userId" : inverter['userId'],
-        "inverter_model" : inverter['model'].replace(" ","\ ")
+        "inverter_model" : inverter['model'].replace(" ","\ "),
+        "influxdb_database" : "Systemstats"        
         
     }
     
