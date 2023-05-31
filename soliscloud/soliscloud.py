@@ -163,7 +163,7 @@ class SolisCloud:
                 datestring,
                 req_path
                 ])
-
+        
         self.printDebug(f"Signstr: {signstr}")
         
         # HMAC and then base64 it
@@ -569,12 +569,12 @@ def extractSiteStats(site, config):
 
 if __name__ == "__main__":
     # TODO: Take from environment
-    DEBUG = True
+    DEBUG = False
     
     # TODO: This should eventually be false
     # but having mock responses is the only way to proceed until I've got
     # API access
-    MOCK = True
+    MOCK = False
     config = configFromEnv()    
     soliscloud = SolisCloud(config, debug=DEBUG, mock=MOCK)
     
@@ -587,7 +587,7 @@ if __name__ == "__main__":
                 content_type="application/json", 
                 datestring='Fri, 26 Jul 2019 06:00:46 GMT')
         )
-
+    
     stations = soliscloud.fetchStationList()
     print(stations)
     # TODO: lets not do this:
