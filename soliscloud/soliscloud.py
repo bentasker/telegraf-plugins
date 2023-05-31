@@ -477,8 +477,14 @@ def extractBatteryStats(inverter, config):
         "batteryTodayChargeEnergyStr": f'"{inverter["batteryTodayChargeEnergyStr"]}"',
         "batteryTodayDischargeEnergy": float(inverter['batteryTodayDischargeEnergy']),
         "batteryTodayDischargeEnergyStr": f'"{inverter["batteryTodayDischargeEnergyStr"]}"',
-        "readingAge" : f"{round(time.time() - int(inverter['dataTimestamp']))}i"
+        "readingAge" : f"{round(time.time() - int(inverter['dataTimestamp']))}i",
+
         }
+    
+    tags["batteryState"] = "charging"
+    if fields["batteryPower"] < 0:
+        tags["batteryState"] = "discharging"
+        
     
     # Construct the LP
     lp1 = [config['measurement']]
