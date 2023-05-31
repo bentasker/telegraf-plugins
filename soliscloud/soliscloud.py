@@ -558,10 +558,8 @@ def extractInverterStats(inverter, config):
     It looks like the API reports in Wh if the value's low enough, but doesn't adjust the unit in the "Str" field. That doesn't do much to explain the different value in the UI though.
     '''
     total_usage = (fields["gridBuyToday"] + fields["batterySupplyToday"] + fields["todayYield"])
-    print(total_usage)
     # subtract any power used to charge the battery
     total_usage = total_usage - fields["batteryChargeToday"]
-    print(total_usage)
     # and subtract anything shipped back to the grid
     
     # TODO: enable this once the issues above are resolved
@@ -643,7 +641,7 @@ if __name__ == "__main__":
             sys.exit(1)
             
         for inverter in inverters['data']['page']['records']:
-            print(inverter)
+            #print(inverter)
             inverter_details = soliscloud.fetchInverterDetail(inverter['id'])['data']
             lp = extractBatteryStats(inverter_details, config)
             inverter_lp = extractInverterStats(inverter_details, config)
