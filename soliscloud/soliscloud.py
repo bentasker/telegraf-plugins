@@ -546,7 +546,26 @@ def extractInverterStats(inverter, config):
         if k in inverter:
             fields[f"panel_{i}"] = float(inverter[f"pow{i}"])    
 
-
+    # Total is solar yield + battery output + grid supply
+    
+    '''
+    There's a problem here with the API's output
+    
+    'gridPurchasedTodayEnergy': 654.6, 'gridPurchasedTodayEnergyStr': 'kWh'
+    
+    There's no way that we've pulled 654 kWh from the grid. The soliscloud UI says 0.12kWh which doesn't line up either.  
+    
+    It looks like the API reports in Wh if the value's low enough, but doesn't adjust the unit in the "Str" field. That doesn't do much to explain the different value in the UI though.
+    '''
+    total_usage = (fields["gridBuyToday"] + fields["batterySupplyToday"] + fields["todayYield"])
+    print(total_usage)
+    # subtract any power used to charge the battery
+    total_usage = total_usage - fields["batteryChargeToday"]
+    print(total_usage)
+    # and subtract anything shipped back to the grid
+    
+    # TODO: enable this once the issues above are resolved
+    # fields['todayUsage'] = total_usage - fields["gridSellToday"]
     
     # Construct the LP
     lp1 = [config['measurement']]
