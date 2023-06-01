@@ -444,7 +444,8 @@ def extractInverterStats(inverter, station, config):
         "batteryChargeToday" : float(inverter['batteryTodayChargeEnergy']),
         "readingAge" : f"{round(time.time() - (int(inverter['dataTimestamp']) / 1000))}i",
         "stationCapacity" : float(station['capacity']),
-        "stationCapacityUsedPerc" : float(station['capacityPercent']) * 100
+        "stationCapacityUsedPerc" : float(station['capacityPercent']) * 100,
+        "consumptionToday" : float(station['homeLoadTodayEnergy'])
         }
     
     
@@ -463,6 +464,9 @@ def extractInverterStats(inverter, station, config):
     There's no way that we've pulled 654 kWh from the grid. The soliscloud UI says 0.12kWh which doesn't line up either.  
     
     It looks like the API reports in Wh if the value's low enough, but doesn't adjust the unit in the "Str" field. That doesn't do much to explain the different value in the UI though.
+    
+    The station value homeLoadTodayEnergy has been used instead - however it remains to be seen whether this suffers
+    from the same issue.
     '''
     total_usage = (fields["gridBuyToday"] + fields["batterySupplyToday"] + fields["todayYield"])
     # subtract any power used to charge the battery
