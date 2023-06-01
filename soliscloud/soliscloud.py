@@ -609,8 +609,8 @@ def extractSiteStats(site, config):
     
 
 if __name__ == "__main__":
-    # TODO: Take from environment
-    DEBUG = False
+    # Are we running in debug mode?
+    DEBUG = os.getenv("DEBUG", "false").lower() == "true"
     
     # TODO: This should eventually be false
     # but having mock responses is the only way to proceed until I've got
