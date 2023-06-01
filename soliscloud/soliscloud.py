@@ -491,33 +491,7 @@ def extractInverterStats(inverter, station, config):
         ','.join(lp2)
         ])
     return lp    
-
-
-def extractSiteStats(site, config):
-    ''' Receive a dict with a site's details and extract stats
-    '''
-    # TODO: it's not clear whether the API will change units
-    # we should probably normalise our output if it does
-    
-    # tags first 
-    tags = {
-        "type" : "site",
-        "device_type" : "none",
-        "station" : site['id'],
-        "userId" : site['userId'],       
-    }
-    
-    fields = {
-        "readingAge" : f"{round(time.time() - int(inverter['dataTimestamp']))}i",
-        "capacity" : float(site['capacity']),
-        "capacityStr" : f'"{site["capacityStr"]}"',
-        "dayEnergy" : float(site['dayEnergy']),
-        "dayEnergyStr" : f'"{site["dayEnergyStr"]}"',
-        "dayIncome" : float(site['dayIncome']),
-        }    
-    
-    
-    
+  
 
 if __name__ == "__main__":
     # Are we running in debug mode?
