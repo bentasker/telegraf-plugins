@@ -538,9 +538,7 @@ if __name__ == "__main__":
         # The list detail doesn't tell us anything about batteries, so we need
         # to iterate through and get details
         if not inverters:
-            # TODO: do we _really_ want to exit at this point, or should we return
-            # what we've got?
-            sys.exit(1)
+            continue
             
         for inverter in inverters['data']['page']['records']:
             #print(inverter)
