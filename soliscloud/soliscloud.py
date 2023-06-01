@@ -374,13 +374,14 @@ def extractBatteryStats(inverter, config):
     fields = {
         "batteryPowerUnit" : f'"{inverter["batteryPowerStr"]}"',
         "batteryPowerPerc" : float(inverter['batteryCapacitySoc']),
+        "batteryHealthPerc" : float(inverter['batteryHealthSoh']),
         "batteryCurrentStr" : f'"{inverter["storageBatteryCurrentStr"]}"',
         "batteryTodayChargeEnergy": float(inverter['batteryTodayChargeEnergy']),
         "batteryTodayChargeEnergyStr": f'"{inverter["batteryTodayChargeEnergyStr"]}"',
         "batteryTodayDischargeEnergy": float(inverter['batteryTodayDischargeEnergy']),
         "batteryTodayDischargeEnergyStr": f'"{inverter["batteryTodayDischargeEnergyStr"]}"',
         "readingAge" : f"{round(time.time() - (int(inverter['dataTimestamp'])/1000))}i",
-
+        "batteryVoltage" : float(inverter['storageBatteryVoltage'])
         }
     
     if inverter["batteryPower"] < 0:
