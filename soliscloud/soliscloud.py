@@ -211,6 +211,10 @@ class SolisCloud:
         
         resp = r.json()
         self.printDebug(f'Fetched inverter {resp}')
+        
+        if not resp or "success" not in resp or not resp['success']:
+            return False        
+        
         return resp
     
         
@@ -247,6 +251,10 @@ class SolisCloud:
         
         resp = r.json()
         self.printDebug(f'Fetched inverter list: {resp}')
+        
+        if not resp or "success" not in resp or not resp['success']:
+            return False
+        
         return resp
 
 
@@ -285,6 +293,9 @@ class SolisCloud:
         
         resp = r.json()
         self.printDebug(f'Got station list: {resp}')
+        
+        if not resp or "success" not in resp or not resp['success']:
+            return False
         
         return resp
 
@@ -511,10 +522,9 @@ if __name__ == "__main__":
     
     stations = soliscloud.fetchStationList()
 
-    # TODO: lets not do this:
-    if not stations or "data" not in stations or "page" not in stations['data'] or "records" not in stations['data']['page']:
+    # Check we got a successful response
+    if not stations:
         sys.exit(1)
-    
     
     # Line protocol will be written into here as it's generated
     lp_buffer = []
@@ -527,14 +537,20 @@ if __name__ == "__main__":
         
         # The list detail doesn't tell us anything about batteries, so we need
         # to iterate through and get details
-        if not inverters or "data" not in inverters or "page" not in inverters['data'] or "records" not in inverters['data']['page']:
+        if not inverters:
             # TODO: do we _really_ want to exit at this point, or should we return
             # what we've got?
             sys.exit(1)
             
         for inverter in inverters['data']['page']['records']:
             #print(inverter)
-            inverter_details = soliscloud.fetchInverterDetail(inverter['id'])['data']
+            inv = soliscloud.fetchInverterDetail(inverter['id'])
+            
+            if not inv:
+                # Move onto the next
+                continue
+            
+            inverter_details = inv['data']
             lp = extractBatteryStats(inverter_details, config)
             inverter_lp = extractInverterStats(inverter_details, station, config)
             
