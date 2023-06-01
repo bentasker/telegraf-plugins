@@ -209,7 +209,9 @@ class SolisCloud:
             req_body
             )
         
-        return r.json()
+        resp = r.json()
+        self.printDebug(f'Fetched inverter {resp}')
+        return resp
     
         
     def fetchInverterList(self, station_id=False):
@@ -243,7 +245,9 @@ class SolisCloud:
             req_body
             )
         
-        return r.json()
+        resp = r.json()
+        self.printDebug(f'Fetched inverter list: {resp}')
+        return resp
 
 
     def fetchStationList(self):
@@ -279,7 +283,10 @@ class SolisCloud:
             req_body
             )
         
-        return r.json()
+        resp = r.json()
+        self.printDebug(f'Got station list: {resp}')
+        
+        return resp
 
 
     def postRequest(self, url, headers, data):
