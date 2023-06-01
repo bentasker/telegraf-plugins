@@ -53,10 +53,9 @@ import time
 
 class SolisCloud:
 
-    def __init__(self, config, session=False, debug=False, mock=False):
+    def __init__(self, config, session=False, debug=False):
         self.config = config
         self.debug = debug
-        self.mock = mock
         if session:
             self.session = session
         else:
@@ -202,43 +201,7 @@ class SolisCloud:
         headers = self.doAuth(self.config['api_id'], self.config['api_secret'], req_path, req_body)
                 
         self.printDebug(f'Built request - Headers {headers}, body: {req_body}, path: {req_path}')
-        
-        if self.mock:
-            self.printDebug('Returning mocked response')
-            return {
-                "success" : True,
-                "code" : "0",
-                "msg" : "successful",
-                "data" : {                
-                    "id" : inverter_id,
-                    "sn" : "serial1234",
-                    "stationId" : 1234,
-                    "userId" : 7890,
-                    "collectorName" : "Soliscloud Acme collector",
-                    "currentState" : 1,
-                    "eToday" : 3.5,
-                    "eTodayStr" : "kWh",
-                    "pac" : 4,
-                    "pacStr" : "kWh",
-                    "dataTimestamp" : 123456789101112,
-                    "inverterTemperature" : 20,
-                    "batteryType" : "Solis Acme battery",
-                    "batteryPower" : 7,
-                    "batteryPowerStr" : "kWh",
-                    "batteryPowerPec" : 50,
-                    "batteryVoltage" : 14,
-                    "batteryVoltageStr" : "V",
-                    "batteryCurrent" : 3,
-                    "batteryCurrentStr" : "A",
-                    "batteryTodayChargeEnergy" : 3,
-                    "batteryTodayChargeEnergyStr" : "kWh",                
-                    "batteryTodayDischargeEnergy" : 1,
-                    "batteryTodayDischargeEnergyStr" : "kWh",
-                    "model" : "5100",
-                    "name" : "clive"
-                }
-            }
-        
+                
         # Place the request
         r = self.postRequest(
             f"{self.config['api_url']}{req_path}",
@@ -272,45 +235,7 @@ class SolisCloud:
         headers = self.doAuth(self.config['api_id'], self.config['api_secret'], req_path, req_body)
         
         self.printDebug(f'Built request - Headers {headers}, body: {req_body}, path: {req_path}')
-        
-        if self.mock:
-            self.printDebug('Returning mocked response')
-            return {
-                "success" : True,
-                "code" : "0",
-                "msg" : "successful",
-                "data" : {
-                    "stationStatusVo" : {
-                        "all" : 1,
-                        "normal" : 1,
-                        "offline" : 0,
-                        "fault" : 0,
-                    },
-                    "page" : {
-                        "total" : 1,
-                        "records" : [{
-                            # Note: The API doc says this is a long
-                            # but, the value returned to a similar call made by the cloud UI is a string
-                            "id" : 1234567890,
-                            "sn" : "serial1234",
-                            "stationId": 1234,
-                            "userId": 7890,
-                            "power" : "3.8",
-                            "powerStr" : "kWp",
-                            "etoday" : 15,
-                            "etodayStr": "kWh",
-                            "pac" : 10,
-                            "pacStr" : "kWh",
-                            # 1：Online 2：Offline 3：Alarm
-                            "state": 1,
-                            "dataTimeStamp" : 1234567891011,
-                            "collectorSn" : "181920",
-                            "series" : "Solis Acme Inverter",                        
-                            }]
-                    }
-                }
-            }
-        
+                
         # Place the request
         r = self.postRequest(
             f"{self.config['api_url']}{req_path}",
@@ -346,47 +271,7 @@ class SolisCloud:
         headers = self.doAuth(self.config['api_id'], self.config['api_secret'], req_path, req_body)
                 
         self.printDebug(f'Built request - Headers {headers}, body: {req_body}, path: {req_path}')
-        
-        if self.mock:
-            self.printDebug('Returning mocked response')
-            return {
-                "success" : True,
-                "code" : '0',
-                "msg" : "success",
-                "data" : {
-                    "stationStatusVo" : {
-                        "all" : 1,                    
-                        "normal" : 1,
-                        "offline" : 0,
-                        "fault" : 0,
-                        "building" : 0,
-                        "mppt" : 0
-                    },
-                    "page" : {
-                        "total" : 1,
-                        "records" : [{
-                            # Note: The API doc says this is a long
-                            # but, the value returned to a similar call made by the cloud UI is a string
-                            "id" : "12345",
-                            "userId" : 7890,
-                            "capacity": 3.28,
-                            "capacityStr": "kWp",
-                            "capacityPercent": 0.0,
-                            "installerId" : 4567,
-                            "installer": "ACME",
-                            "dataTimestamp" : "1683905510946",
-                            "dayEnergy" : 0.0,
-                            "dayEnergyStr" : "kWh",
-                            "dayIncome" : 0.0,
-                            "batteryTotalDischargeEnergy" : 0.0,
-                            "batteryTotalChargeEnergy" : 0.0,
-                            "condTxtD": "Cloudy",
-                            "inverterCount" : 0
-                            }]
-                    }
-                }
-            }
-        
+               
         # Place the request
         r = self.postRequest(
             f"{self.config['api_url']}{req_path}",
@@ -612,12 +497,8 @@ if __name__ == "__main__":
     # Are we running in debug mode?
     DEBUG = os.getenv("DEBUG", "false").lower() == "true"
     
-    # TODO: This should eventually be false
-    # but having mock responses is the only way to proceed until I've got
-    # API access
-    MOCK = False
     config = configFromEnv()    
-    soliscloud = SolisCloud(config, debug=DEBUG, mock=MOCK)
+    soliscloud = SolisCloud(config, debug=DEBUG)
     
     stations = soliscloud.fetchStationList()
 
