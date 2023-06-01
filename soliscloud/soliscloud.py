@@ -400,7 +400,7 @@ def extractBatteryStats(inverter, config):
     return lp
     
 
-def extractInverterStats(inverter, config):
+def extractInverterStats(inverter, station, config):
     ''' Receive a dict of inverter detail and extract inverter details
     
     '''
@@ -431,7 +431,9 @@ def extractInverterStats(inverter, config):
         "gridSellToday" : float(inverter['gridSellTodayEnergy']),
         "batterySupplyToday" : float(inverter['batteryTodayDischargeEnergy']),
         "batteryChargeToday" : float(inverter['batteryTodayChargeEnergy']),
-        "readingAge" : f"{round(time.time() - (int(inverter['dataTimestamp']) / 1000))}i"
+        "readingAge" : f"{round(time.time() - (int(inverter['dataTimestamp']) / 1000))}i",
+        "stationCapacity" : float(station['capacity']),
+        "stationCapacityUsedPerc" : float(station['capacityPercent']) * 100
         }
     
     
@@ -519,7 +521,7 @@ if __name__ == "__main__":
     
     # Now get a list of inverters
     for station in stations["data"]["page"]["records"]:
-        
+                
         # Get a list of inverters at the station
         inverters = soliscloud.fetchInverterList(station_id=station['id'])
         
@@ -534,7 +536,7 @@ if __name__ == "__main__":
             #print(inverter)
             inverter_details = soliscloud.fetchInverterDetail(inverter['id'])['data']
             lp = extractBatteryStats(inverter_details, config)
-            inverter_lp = extractInverterStats(inverter_details, config)
+            inverter_lp = extractInverterStats(inverter_details, station, config)
             
             lp_buffer.append(lp)
             lp_buffer.append(inverter_lp)
