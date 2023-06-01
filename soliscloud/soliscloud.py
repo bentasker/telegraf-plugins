@@ -333,6 +333,7 @@ class SolisCloud:
 
 # Utility functions to help with __main__ runs
 
+
 def configFromEnv():
     ''' Build a dict of configuration settings based on environment variables
     '''
@@ -348,6 +349,7 @@ def configFromEnv():
         "max_ratelimit_wait" : int(os.getenv("API_RATE_LIMIT_MAXWAIT", 8)),
         "measurement" : os.getenv("MEASUREMENT", "solar_inverter")
         }
+
 
 def extractBatteryStats(inverter, config):
     ''' Take inverter details and construct line protocol relating to the attached battery
@@ -380,8 +382,6 @@ def extractBatteryStats(inverter, config):
         "readingAge" : f"{round(time.time() - (int(inverter['dataTimestamp'])/1000))}i",
 
         }
-    
-
     
     if inverter["batteryPower"] < 0:
         tags["batteryState"] = "discharging"
@@ -486,7 +486,8 @@ def extractInverterStats(inverter, station, config):
         ','.join(lp2)
         ])
     return lp    
-    
+
+
 def extractSiteStats(site, config):
     ''' Receive a dict with a site's details and extract stats
     '''
