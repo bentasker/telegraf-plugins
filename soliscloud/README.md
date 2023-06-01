@@ -2,7 +2,9 @@
 
 This is an exec based plugin for Telegraf designed to collect Electricity usage and generation statistics from [Soliscloud](https://www.soliscloud.com/). Inverters, Dataloggers, EPMs and Meters made by [Ginlong Technologies](https://www.ginlong.com/) tend to report  into Soliscloud.
 
-This plugin calls the Soliscloud API in order to retrieve information so that [Telegraf](https://github.com/influxdata/telegraf) can write it into InfluxDB.
+This plugin calls the Soliscloud API in order to retrieve information so that [Telegraf](https://github.com/influxdata/telegraf) can write it into InfluxDB for easy visualisation.
+
+![Screenshot of Grafana dashboard showing information from my Solis inverter](screenshot/grafana.png)
 
 More information on the original development can be found in [utilities/telegraf-plugins#9](https://projects.bentasker.co.uk/gils_projects/issue/utilities/telegraf-plugins/9.html)
 
