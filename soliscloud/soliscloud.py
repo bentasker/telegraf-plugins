@@ -438,7 +438,7 @@ def extractInverterStats(inverter, station, config):
         "todayYieldStr" : f'"{inverter["eTodayStr"]}"',
         "power_ac" : float(inverter['pac']),
         "power_ac_str" : f'"{inverter["pacStr"]}"',
-        "temperature" : float(inverter['inverterTemperature']), 
+        "temperature" : float(inverter['inverterTemperature']),
         "gridBuyToday" : float(inverter['gridPurchasedTodayEnergy']),
         "gridBuyTotal" : float(inverter['gridPurchasedTotalEnergy']),
         "gridSellToday" : float(inverter['gridSellTodayEnergy']),
@@ -448,7 +448,10 @@ def extractInverterStats(inverter, station, config):
         "readingAge" : f"{round(time.time() - (int(inverter['dataTimestamp']) / 1000))}i",
         "stationCapacity" : float(station['capacity']),
         "stationCapacityUsedPerc" : float(station['capacityPercent']) * 100,
-        "consumptionToday" : float(station['homeLoadTodayEnergy'])
+        "consumptionToday" : float(station['homeLoadTodayEnergy']),
+        "consumptionTotal" : float(station['homeLoadTotalEnergy']),
+        "consumption" : float(inverter['familyLoadPower']),
+        "consumptionStr" : f'"{inverter["familyLoadPowerStr"]}"'
         }
     
     
