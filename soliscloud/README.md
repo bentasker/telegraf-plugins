@@ -90,13 +90,17 @@ Note: many of the fields are accompanied by a field denoting the unit (for examp
 - `power_ac`:  current power output of inverter (normally `kW`)
 - `temperature`: Ambient temperature 
 - `gridBuyToday` : Energy taken from the grid today
+- `gridBuyTotal` : Total Energy taken from the grid
 - `gridSellToday`: Energy exported to the grid today
+- `gridSellTotal`: Total Energy exported to the grid
 - `batterySupplyToday`: Energy supplied by the battery today
 - `batteryChargeToday`: Energy stored/charged into the battery today
 - `readingAge`: how long ago (in seconds) since the inverter reported these stats into soliscloud
 - `stationCapacity`: Installed solar capacity (usually in `kWp`)
 - `stationCapacityUsedPerc`: Currently realised percentage of installed capacity
 - `consumptionToday`: Total energy consumed today from all sources
+- `consumptionTotal`: Total energy consumed from all sources
+- `consumption`: Total energy currently being consumed from all sources
 - `panel_1`..`panel_31`: Current energy output (usually in `W`) of each solar string
 
 
