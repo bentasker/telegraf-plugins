@@ -69,8 +69,6 @@ solar_inverter,type=device,device_type=inverter,inverter_id=123456,inverter_sn=7
 
 Note: many of the fields are accompanied by a field denoting the unit (for example `batteryCurrent` and `batteryCurrentStr`). These are drawn from the API and (appear) to be drawn from localisation settings in the user's Soliscloud profile.
 
-There's reason to believe that values reported are [not always in these units](https://projects.bentasker.co.uk/gils_projects/issue/utilities/telegraf-plugins/9.html#comment4648) - for example, a field claiming to be in `kWh` might report 500 watts as `500` rather than `0.5` (whereas `1500` would use the correct unit - `1.5`).
-
 
 `device_type=battery`
 
@@ -100,6 +98,22 @@ There's reason to believe that values reported are [not always in these units](h
 - `stationCapacityUsedPerc`: Currently realised percentage of installed capacity
 - `consumptionToday`: Total energy consumed today from all sources
 - `panel_1`..`panel_31`: Current energy output (usually in `W`) of each solar string
+
+
+----
+
+### Unexpected Initial Values
+
+It's been observed (in [utilities/telegraf-plugins#9](https://projects.bentasker.co.uk/gils_projects/issue/utilities/telegraf-plugins/9.html#comment4648) and [utilities/telegraf-plugins#10](https://projects.bentasker.co.uk/gils_projects/issue/utilities/telegraf-plugins/10.html#comment4661)) that the Soliscloud API can report unexpectedly high values for some counters on the first day that a reading is registered for that particular counter.
+
+The following counters have been observed to do this
+
+- `gridBuyToday` (will usually be the first day that the inverter is online)
+- `gridSellToday` (may occur later - it'll be the first day that energy is actually exported to the grid)
+
+After the first day's high values, readings appear to normalise and report correctly.
+
+Oddly the corresponding "Total" fields are unaffected, so on the first day, `gridBuyTotal` and `gridSellTotal` can be used to obtain a more accurate read.
 
 
 ----
