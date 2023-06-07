@@ -102,6 +102,11 @@ Note: many of the fields are accompanied by a field denoting the unit (for examp
 - `consumptionTotal`: Total energy consumed from all sources
 - `consumption`: Total energy currently being consumed from all sources
 - `panel_1`..`panel_31`: Current energy output (usually in `W`) of each solar string
+- `localSupplyToday`: value (in kWh) of energy supplied locally today
+- `localSupplyPercToday`: Percentage of consumed energy supplied locally today
+- `localSupplyTotal`: Total kWh supplied by local sources
+- `localSupplyPercTotal`: Percentage of total consumed energy supplied by local sources
+
 
 
 ----
