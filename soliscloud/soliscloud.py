@@ -463,7 +463,7 @@ def extractInverterStats(inverter, station, config):
     # Total is solar yield + battery output + grid supply
     
     '''
-    There's a problem here with the API's output
+    There's a known problem here with the API's output
     
     'gridPurchasedTodayEnergy': 654.6, 'gridPurchasedTodayEnergyStr': 'kWh'
     
@@ -471,16 +471,14 @@ def extractInverterStats(inverter, station, config):
     
     It looks like the API reports in Wh if the value's low enough, but doesn't adjust the unit in the "Str" field. That doesn't do much to explain the different value in the UI though.
     
-    The station value homeLoadTodayEnergy has been used instead - however it remains to be seen whether this suffers
-    from the same issue.
+    It looks like this only happens on the first day that stats are recorded against a counter (so for gridPurchasedTodayEnergy, normally the first day of operation). See https://github.com/bentasker/telegraf-plugins/tree/master/soliscloud#unexpected-initial-values for more info
     '''
     total_usage = (fields["gridBuyToday"] + fields["batterySupplyToday"] + fields["todayYield"])
     # subtract any power used to charge the battery
     total_usage = total_usage - fields["batteryChargeToday"]
-    # and subtract anything shipped back to the grid
     
-    # TODO: enable this once the issues above are resolved
-    # fields['todayUsage'] = total_usage - fields["gridSellToday"]
+    # and subtract anything shipped back to the grid
+    fields['todayUsage'] = total_usage - fields["gridSellToday"]
     
     # Construct the LP
     lp1 = [config['measurement']]
