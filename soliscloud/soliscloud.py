@@ -436,6 +436,7 @@ def extractInverterStats(inverter, station, config):
         "state" : int(inverter['currentState']),
         "todayYield" : float(inverter['eToday']),
         "todayYieldStr" : f'"{inverter["eTodayStr"]}"',
+        "totalYield" : float(inverter['eTotal']),
         "power_ac" : float(inverter['pac']),
         "power_ac_str" : f'"{inverter["pacStr"]}"',
         "temperature" : float(inverter['inverterTemperature']),
