@@ -466,6 +466,11 @@ def extractInverterStats(inverter, station, config):
         fields['localSupplyPercToday'] = 100 - ((fields['gridBuyToday'] / fields['consumptionToday']) * 100)
 
 
+    fields['localSupplyTotal'] = fields['consumptionTotal'] - fields['gridBuyTotal']
+    if fields['consumptionTotal'] > 0:
+        fields['localSupplyPercTotal'] = 100 - ((fields['gridBuyTotal'] / fields['consumptionTotal']) * 100)
+    
+
     # Total is solar yield + battery output + grid supply
     
     '''
