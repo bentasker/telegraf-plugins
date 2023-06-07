@@ -460,6 +460,12 @@ def extractInverterStats(inverter, station, config):
         if k in inverter:
             fields[f"panel_{i}"] = float(inverter[f"pow{i}"])    
 
+    # Calculate total local supply
+    fields['localSupplyToday'] = fields['consumptionToday'] - fields['gridBuyToday']
+    if fields['consumptionToday'] > 0:
+        fields['localSupplyPercToday'] = 100 - ((fields['gridBuyToday'] / fields['consumptionToday']) * 100)
+
+
     # Total is solar yield + battery output + grid supply
     
     '''
