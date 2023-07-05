@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+from datetime import datetime as dt
+from datetime import timedelta as tdel
 import os
 import requests
 import base64
@@ -17,8 +19,14 @@ def getPricing(meter, session):
     product_code = '-'.join(tariff_split[2:-1])
     meter['region'] = tariff_split[-1]
     
+    # Calculate the `from` date to apply (1 day ago)
+    tday = dt.now()
+    yday = tday - tdel(days=1)
+
+    from_str = yday.strftime("%Y-%m-%d %H:%M:%SZ")
+    
     # We can now use this to retrieve pricing
-    result = session.get(f"https://api.octopus.energy/v1/products/{product_code}/electricity-tariffs/{meter['tariff-code']}/standard-unit-rates")
+    result = session.get(f"https://api.octopus.energy/v1/products/{product_code}/electricity-tariffs/{meter['tariff-code']}/standard-unit-rates?period_from={from_str}")
 
     for pricepoint in result.json()['results']:
         meter['pricing'].append(pricepoint)
