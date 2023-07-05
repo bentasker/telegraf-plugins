@@ -33,6 +33,53 @@ def getPricing(meter, session):
             
     return meter
     
+def generateLP(addresses):
+    ''' Take the built dict and generate multiple lines of LP
+    '''
+    
+    for address in addresses:
+        base_tagset = {
+            "address_id" : address['id'],
+            "account_number" : address['account_number']           
+            }
+        
+        # Iterate through any electricity meters
+        for meter in address['meters']:
+            tagset = base_tagset | {
+                    "mpan" : meter['mpan'],
+                    "meter_serial" : meter['serial'],
+                    "region_code" : meter['region']
+                }
+            
+            # Iterate through prices
+            for price in meter['pricing']:
+                priceToLP(price, meter['tariff-code'])
+                        
+def priceToLP(price, tariff_code):
+    ''' Take a pricing dict and generate LP
+    '''
+    {'value_exc_vat': 29.2574, 'value_inc_vat': 30.72027, 'valid_from': '2023-06-30T23:00:00Z', 'valid_to': None, 'payment_method': 'DIRECT_DEBIT'}
+    
+
+    tags = [
+        "octopus_pricing", # the measurement name
+        f"payment_method={price['payment_method']}",
+        f"tariff_code={tariff_code}"
+        ]
+    
+    fields = [
+            f"cost_exc_vat={price['value_exc_vat']}",
+            f"cost_inc_vat={price['value_inc_vat']}",
+            f"valid_from=\"{price['valid_from']}\"",
+            f"valid_to=\"{price['valid_to']}\""
+        ]
+    
+    lp = " ".join([','.join(tags), ','.join(fields)])
+    print(lp)
+    
+    # We now need to generate a line for every 30 minutes between valid_from and valid_to
+    # if valid_to is "None" we should use now()
+    
 
 def main(api_key, octo_account):
     ''' Main entry point
@@ -92,6 +139,7 @@ def main(api_key, octo_account):
     addresses.append(prop_info)
     
     print(addresses)
+    generateLP(addresses)
 
 
 if __name__ == "__main__":
