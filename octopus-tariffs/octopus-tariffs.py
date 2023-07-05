@@ -26,11 +26,22 @@ def getPricing(meter, session):
     from_str = yday.strftime("%Y-%m-%d %H:%M:%SZ")
     
     # We can now use this to retrieve pricing
+    #
+    # TODO: we should check if the meter records the tariff type as STANDARD 
+    # if not, we should be looking at day-unit/night-unit
     result = session.get(f"https://api.octopus.energy/v1/products/{product_code}/electricity-tariffs/{meter['tariff-code']}/standard-unit-rates?period_from={from_str}")
 
     for pricepoint in result.json()['results']:
+        pricepoint['type'] = "usage-charge"
         meter['pricing'].append(pricepoint)
             
+    # We also need to grab the daily standing charges
+    result = session.get(f"https://api.octopus.energy/v1/products/{product_code}/electricity-tariffs/{meter['tariff-code']}/standing-charges?period_from={from_str}")
+
+    for pricepoint in result.json()['results']:
+        pricepoint['type'] = "standing-charge"
+        meter['pricing'].append(pricepoint)
+        
     return meter
     
 def generateLP(addresses):
@@ -68,7 +79,8 @@ def priceToLP(price, tariff_code):
     tags = [
         "octopus_pricing", # the measurement name
         f"payment_method={price['payment_method']}",
-        f"tariff_code={tariff_code}"
+        f"tariff_code={tariff_code}",
+        f"charge_type={price['type']}"
         ]
     
     fields = [
