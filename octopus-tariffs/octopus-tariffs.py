@@ -37,6 +37,7 @@ def generateLP(addresses):
     ''' Take the built dict and generate multiple lines of LP
     '''
     
+    lp_buffer = []
     for address in addresses:
         base_tagset = {
             "address_id" : address['id'],
@@ -53,7 +54,10 @@ def generateLP(addresses):
             
             # Iterate through prices
             for price in meter['pricing']:
-                priceToLP(price, meter['tariff-code'])
+                lp_buffer = lp_buffer + priceToLP(price, meter['tariff-code'])
+                
+    return lp_buffer
+
                         
 def priceToLP(price, tariff_code):
     ''' Take a pricing dict and generate LP
@@ -75,11 +79,26 @@ def priceToLP(price, tariff_code):
         ]
     
     lp = " ".join([','.join(tags), ','.join(fields)])
-    print(lp)
     
     # We now need to generate a line for every 30 minutes between valid_from and valid_to
     # if valid_to is "None" we should use now()
+    #
+    # Convert to epoch and then we can just iterate through in 30 min chunks
+    if not price['valid_to']:
+        valid_to = int(dt.now().strftime('%s'))
+    else:
+        valid_to = int(dt.strptime(price['valid_to'], '%Y-%m-%dT%H:%M:%SZ').strftime('%s'))
+                               
+    valid_from = int(dt.strptime(price['valid_from'], '%Y-%m-%dT%H:%M:%SZ').strftime('%s'))
     
+    # Iterate through
+    lp_buffer = []
+    while valid_from < valid_to:
+        lp_buffer.append(f"{lp} {valid_from * 1000000000}")
+        valid_from = valid_from + 1800
+        
+    return lp_buffer
+
 
 def main(api_key, octo_account):
     ''' Main entry point
@@ -138,8 +157,9 @@ def main(api_key, octo_account):
         prop_info['meters'].append(meter_info)
     addresses.append(prop_info)
     
-    print(addresses)
-    generateLP(addresses)
+    # Turn it into LP
+    lp_buffer = generateLP(addresses)
+    [print(x) for x in lp_buffer]
 
 
 if __name__ == "__main__":
