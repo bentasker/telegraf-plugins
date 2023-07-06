@@ -7,6 +7,19 @@ import requests
 import base64
 
 
+def getConsumption(meter, session):
+    ''' Call the API and fetch consumption information
+    '''
+    # Calculate the `from` date to apply (1 day ago)
+    tday = dt.now()
+    yday = tday - tdel(days=1)
+
+    from_str = yday.strftime("%Y-%m-%d %H:%M:%SZ")
+    
+    result = session.get(f"https://api.octopus.energy/v1/electricity-meter-points/{meter['mpan']}/meters/{meter['serial']}/consumption?period_from={from_str}")    
+    
+    return result.json()['results']
+
 def getPricing(meter, session):
     ''' Calculate the product code and fetch pricing info
     '''
@@ -67,9 +80,38 @@ def generateLP(addresses):
             for price in meter['pricing']:
                 lp_buffer = lp_buffer + priceToLP(price, meter['tariff-code'])
                 
+            # and through consumption
+            for consumed in meter['consumption']:
+                lp_buffer.append(consumedToLP(consumed, meter))
+                
     return lp_buffer
 
-                        
+def consumedToLP(consumed, meter):
+    ''' Build LP indicating consumption 
+    '''
+    
+    tags = [
+        "octopus_consumption", # the measurement name
+        f"mpan={meter['mpan']}",
+        f"meter_serial={meter['serial']}",
+        ]
+    
+    fields = [
+            f"tariff_code={meter['tariff-code']}",
+            f"consumption={consumed['consumption']}",            
+        ]
+    
+    # Calculate the timestamp
+    # timezones can fluctuate
+    try:
+        ts = int(dt.strptime(consumed['interval_end'], '%Y-%m-%dT%H:%M:%SZ').strftime('%s'))
+    except:
+        ts = int(dt.strptime(consumed['interval_end'], '%Y-%m-%dT%H:%M:%S+01:00').strftime('%s'))
+    
+    return " ".join([','.join(tags), ','.join(fields), str(ts * 1000000000)])
+    
+    
+    
 def priceToLP(price, tariff_code):
     ''' Take a pricing dict and generate LP
     '''
@@ -166,6 +208,9 @@ def main(api_key, octo_account):
                 
                 # Get tariff info
                 meter_info = getPricing(meter_info, session)
+                
+                # Get consumption
+                meter_info['consumption'] = getConsumption(meter_info, session)
                 
                 # Create some LP for the meter itself
                 lp = f'octopus_meter,mpan={meter_info["mpan"]},property={prop_info["id"]},account={prop_info["account_number"]} start_date="{prop_info["start_date"]}"'
