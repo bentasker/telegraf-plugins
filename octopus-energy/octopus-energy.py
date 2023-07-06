@@ -213,7 +213,7 @@ def main(api_key, octo_account):
                 meter_info['consumption'] = getConsumption(meter_info, session)
                 
                 # Create some LP for the meter itself
-                lp = f'octopus_meter,mpan={meter_info["mpan"]},property={prop_info["id"]},account={prop_info["account_number"]} start_date="{prop_info["start_date"]}"'
+                lp = f'octopus_meter,mpan={meter_info["mpan"]},property={prop_info["id"]},account={prop_info["account_number"]} start_date="{prop_info["start_date"]}" {int(dt.now().strftime("%s")) * 1000000000}'
                 lp_buffer.append(lp)
                 
         prop_info['meters'].append(meter_info)
