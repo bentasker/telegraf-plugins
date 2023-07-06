@@ -12,7 +12,7 @@ def getConsumption(meter, session):
     '''
     # Calculate the `from` date to apply (1 day ago)
     tday = dt.now()
-    yday = tday - tdel(days=1)
+    yday = tday - tdel(days=2)
 
     from_str = yday.strftime("%Y-%m-%d %H:%M:%SZ")
     
