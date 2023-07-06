@@ -2,6 +2,8 @@
 
 This is an exec based plugin for Telegraf designed to collect Electricity usage and tariff details from the [Octopus Energy API](https://developer.octopus.energy/docs/api/)
 
+See [utilities/telegraf-plugins#14](https://projects.bentasker.co.uk/gils_projects/issue/utilities/telegraf-plugins/14.html) for more information on the original intent of the plugin.
+
 
 Note: Octopus fetch consumption from the meter once daily, so although this plugin can collect consumption it cannot provide a realtime view (you need something like the [Glow IHD](https://www.bentasker.co.uk/posts/blog/house-stuff/connecting-my-smart-meter-to-influxdb-using-telegraf-and-a-glow-display.html) or the [Octopus Home Mini](https://octopus.energy/blog/octopus-home-mini/) for that).
 
