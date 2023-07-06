@@ -94,10 +94,10 @@ def consumedToLP(consumed, meter):
         "octopus_consumption", # the measurement name
         f"mpan={meter['mpan']}",
         f"meter_serial={meter['serial']}",
+        f"tariff_code={meter['tariff-code']}"
         ]
     
     fields = [
-            f"tariff_code={meter['tariff-code']}",
             f"consumption={consumed['consumption']}",            
         ]
     
