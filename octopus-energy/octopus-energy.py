@@ -73,6 +73,15 @@ def getPricing(meter, session):
     yday = tday - tdel(days=1)
 
     from_str = yday.strftime("%Y-%m-%d %H:%M:%SZ")
+    tariff_direction = "UNKNOWN"
+    
+    # Currently the tariff direction is only on the products listing, so we need to retrieve that and iterate
+    # through the products looking for the product code.
+    result = session.get(f"https://api.octopus.energy/v1/products/?period_from={from_str}")    
+    for product in result.json()['results']:
+        if product['code'] == product_code:
+            tariff_direction = product['direction']
+            break
     
     # We can now use this to retrieve pricing
     #
@@ -82,6 +91,7 @@ def getPricing(meter, session):
 
     for pricepoint in result.json()['results']:
         pricepoint['type'] = "usage-charge"
+        pricepoint['tariff_direction'] = tariff_direction
         meter['pricing'].append(pricepoint)
             
     # We also need to grab the daily standing charges
@@ -89,6 +99,7 @@ def getPricing(meter, session):
 
     for pricepoint in result.json()['results']:
         pricepoint['type'] = "standing-charge"
+        pricepoint['tariff_direction'] = tariff_direction
         meter['pricing'].append(pricepoint)
         
     return meter
@@ -130,7 +141,8 @@ def consumedToLP(consumed, meter):
         "octopus_consumption", # the measurement name
         f"mpan={meter['mpan']}",
         f"meter_serial={meter['serial']}",
-        f"tariff_code={meter['tariff-code']}"
+        f"tariff_code={meter['tariff-code']}",
+        f"is_export={str(meter['is_export'])}"
         ]
     
     fields = [
@@ -158,7 +170,8 @@ def priceToLP(price, tariff_code):
         "octopus_pricing", # the measurement name
         f"payment_method={price['payment_method']}",
         f"tariff_code={tariff_code}",
-        f"charge_type={price['type']}"
+        f"charge_type={price['type']}",
+        f"tariff_direction={price['tariff_direction']}"
         ]
     
     fields = [
@@ -229,6 +242,7 @@ def main(api_key, octo_account):
         for meter_point in prop['electricity_meter_points']:
             meter_info = {
                 "mpan" : meter_point['mpan'],
+                "is_export" : meter_point['is_export'],
                 "pricing" : []
             }
             for meter in meter_point['meters']:
@@ -273,7 +287,7 @@ def main(api_key, octo_account):
                 meter_info['consumption'] = getConsumption(meter_info, session)
                 
                 # Create some LP for the meter itself
-                lp = f'octopus_meter,mpan={meter_info["mpan"]},property={prop_info["id"]},account={prop_info["account_number"]} start_date="{prop_info["start_date"]}" {int(dt.now().strftime("%s")) * 1000000000}'
+                lp = f'octopus_meter,mpan={meter_info["mpan"]},property={prop_info["id"]},account={prop_info["account_number"]},is_export={str(meter_info["is_export"])} start_date="{prop_info["start_date"]}" {int(dt.now().strftime("%s")) * 1000000000}'
                 lp_buffer.append(lp)
                 
         prop_info['meters'].append(meter_info)
