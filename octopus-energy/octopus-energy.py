@@ -235,12 +235,36 @@ def main(api_key, octo_account):
                 meter_info['serial'] = meter['serial_number']
                 
             for agreement in meter_point['agreements']:
+                ''' agreements lists all agreements against this meter
+                
+                    We need to iterate through them and take only the most
+                    recent, so this is no longer valid (although the most
+                    recent **should** be the last entry).
+                
                 meter_info = meter_info | {
                     
                     "tariff-code" : agreement['tariff_code'],
                     "from" : agreement['valid_from'],
                     "to" : agreement['valid_to']
                     }
+                '''
+                if "valid_to" in agreement and agreement["valid_to"]:
+                    
+                    try:
+                        valid_to = int(dt.strptime(agreement['valid_to'], '%Y-%m-%dT%H:%M:%SZ').strftime('%s'))
+                    except:
+                        valid_to = int(dt.strptime(agreement['valid_to'], '%Y-%m-%dT%H:%M:%S+01:00').strftime('%s'))
+                        
+                    if int(dt.now().strftime('%s')) > valid_to:
+                        continue
+                    
+                meter_info = meter_info | {
+                    "tariff-code" : agreement['tariff_code'],
+                    "from" : agreement['valid_from'],
+                    "to" : agreement['valid_to']
+                    }                
+                
+                
                 
                 # Get tariff info
                 meter_info = getPricing(meter_info, session)
