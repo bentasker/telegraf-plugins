@@ -39,6 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from datetime import datetime as dt
 from datetime import timedelta as tdel
+from dateutil import parser
 import os
 import requests
 import base64
@@ -152,9 +153,9 @@ def consumedToLP(consumed, meter):
     # Calculate the timestamp
     # timezones can fluctuate
     try:
-        ts = int(dt.strptime(consumed['interval_end'], '%Y-%m-%dT%H:%M:%SZ').strftime('%s'))
+        ts = int(parser.parse(consumed['interval_end']).strftime('%s'))
     except:
-        ts = int(dt.strptime(consumed['interval_end'], '%Y-%m-%dT%H:%M:%S+01:00').strftime('%s'))
+        ts = int(parser.parse(consumed['interval_end']).strftime('%s'))
     
     return " ".join([','.join(tags), ','.join(fields), str(ts * 1000000000)])
     
@@ -190,9 +191,9 @@ def priceToLP(price, tariff_code):
     if not price['valid_to']:
         valid_to = int(dt.now().strftime('%s'))
     else:
-        valid_to = int(dt.strptime(price['valid_to'], '%Y-%m-%dT%H:%M:%SZ').strftime('%s'))
+        valid_to = int(parser.parse(price['valid_to']).strftime('%s'))
                                
-    valid_from = int(dt.strptime(price['valid_from'], '%Y-%m-%dT%H:%M:%SZ').strftime('%s'))
+    valid_from = int(parser.parse(price['valid_from']).strftime('%s'))
     
     # Iterate through
     lp_buffer = []
@@ -265,9 +266,9 @@ def main(api_key, octo_account):
                 if "valid_to" in agreement and agreement["valid_to"]:
                     
                     try:
-                        valid_to = int(dt.strptime(agreement['valid_to'], '%Y-%m-%dT%H:%M:%SZ').strftime('%s'))
+                        valid_to = int(parser.parse(agreement['valid_to']).strftime('%s'))
                     except:
-                        valid_to = int(dt.strptime(agreement['valid_to'], '%Y-%m-%dT%H:%M:%S+01:00').strftime('%s'))
+                        valid_to = int(parser.parse(agreement['valid_to']).strftime('%s'))
                         
                     if int(dt.now().strftime('%s')) > valid_to:
                         continue
