@@ -7,6 +7,14 @@
       "type": "datasource",
       "pluginId": "influxdb",
       "pluginName": "InfluxDB"
+    },
+    {
+      "name": "DS_INFLUXDB",
+      "label": "InfluxDB",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
     }
   ],
   "__elements": {},
@@ -360,7 +368,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB_(INFLUXQL)}"
+        "uid": "${DS_INFLUXDB}"
       },
       "description": "",
       "fieldConfig": {
@@ -414,32 +422,7 @@
           },
           "unit": "currencyGBP"
         },
-        "overrides": [
-          {
-            "__systemRef": "hideSeriesFrom",
-            "matcher": {
-              "id": "byNames",
-              "options": {
-                "mode": "exclude",
-                "names": [
-                  "octopus_pricing.mean_cost_inc_vat {tariff_code: E-1R-AGILE-FLEX-22-11-25-A}"
-                ],
-                "prefix": "All except:",
-                "readOnly": true
-              }
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom",
-                "value": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": true
-                }
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
@@ -464,9 +447,9 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB_(INFLUXQL)}"
+            "uid": "${DS_INFLUXDB}"
           },
-          "query": "SELECT mean(\"cost_inc_vat\")/100 AS \"mean_cost_inc_vat\" FROM \"Systemstats\".\"autogen\".\"octopus_pricing\" WHERE $timeFilter AND \"charge_type\"='usage-charge' and tariff_direction != 'EXPORT' GROUP BY time(30m), \"tariff_code\" FILL(null)",
+          "query": "from(bucket: \"Systemstats\")\n |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n |> filter(fn: (r) => r._measurement == \"octopus_pricing\")\n |> filter(fn: (r) => r._field == \"cost_inc_vat\")\n |> filter(fn: (r) => r.tariff_direction != \"EXPORT\")\n |> aggregateWindow(every: 30m, fn: mean)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series"
@@ -701,7 +684,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB_(INFLUXQL)}"
+        "uid": "${DS_INFLUXDB}"
       },
       "description": "",
       "fieldConfig": {
@@ -805,9 +788,9 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB_(INFLUXQL)}"
+            "uid": "${DS_INFLUXDB}"
           },
-          "query": "SELECT mean(\"cost_inc_vat\")/100 AS \"mean_cost_inc_vat\" FROM \"Systemstats\".\"autogen\".\"octopus_pricing\" WHERE $timeFilter AND \"charge_type\"='usage-charge' and tariff_direction = 'EXPORT' GROUP BY time(30m), \"tariff_code\" FILL(null)",
+          "query": "from(bucket: \"Systemstats\")\n |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n |> filter(fn: (r) => r._measurement == \"octopus_pricing\")\n |> filter(fn: (r) => r._field == \"cost_inc_vat\")\n |> filter(fn: (r) => r.tariff_direction == \"EXPORT\")\n |> aggregateWindow(every: 30m, fn: mean)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series"
@@ -1084,6 +1067,6 @@
   "timezone": "",
   "title": "Octopus Pricing",
   "uid": "ffb833f8-fae9-4b8c-9b14-99a2c2d9e8f2",
-  "version": 10,
+  "version": 12,
   "weekStart": ""
 }
