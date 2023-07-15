@@ -84,6 +84,7 @@ Notes:
 
 - The `octopus_meter` measurement exists purely to make information on the meter available, it's most useful values are the tagset rather than the fields
 - The timestamp used in `octopus_consumption` is the *end* of the indicated period, so if Octopus's API reports 1kWh used between 00:00 and 00:30, the timestamp on the point will be for 00:30
+- For ease of joining, the timestamp used in `octopus_pricing` is the *end* of the indicated period, so if Octopus's API reports a price of 0.01 between 00:00 and 00:30, the timestamp on the point will be for 00:30
 - For ease of joining, the plugin calculates `octopus_pricing` points every 30 minutes between `valid_from` and `valid_to`
 - Export tariffs don't currently have any specific handling (that will be added later)
 - Gas isn't currently handled

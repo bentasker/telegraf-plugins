@@ -198,7 +198,7 @@ def priceToLP(price, tariff_code):
     # Iterate through
     lp_buffer = []
     while valid_from < valid_to:
-        lp_buffer.append(f"{lp} {valid_from * 1000000000}")
+        lp_buffer.append(f"{lp} {(valid_from + 1800)  * 1000000000}")
         valid_from = valid_from + 1800
         
     return lp_buffer
