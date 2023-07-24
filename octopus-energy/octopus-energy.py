@@ -102,7 +102,7 @@ def getPricing(meter, session):
         pricepoint['type'] = "standing-charge"
         pricepoint['tariff_direction'] = tariff_direction
         meter['pricing'].append(pricepoint)
-        
+    
     return meter
     
 def generateLP(addresses):
@@ -120,17 +120,21 @@ def generateLP(addresses):
         for meter in address['meters']:
             tagset = base_tagset | {
                     "mpan" : meter['mpan'],
-                    "meter_serial" : meter['serial'],
+                    "meter_serial" : "",
                     "region_code" : meter['region']
                 }
             
+            if "serial" in meter:
+                base_tagset['meter_serial'] = meter['serial']
+                
             # Iterate through prices
             for price in meter['pricing']:
                 lp_buffer = lp_buffer + priceToLP(price, meter['tariff-code'])
                 
             # and through consumption
-            for consumed in meter['consumption']:
-                lp_buffer.append(consumedToLP(consumed, meter))
+            if "consumption" in meter:
+                for consumed in meter['consumption']:
+                    lp_buffer.append(consumedToLP(consumed, meter))
                 
     return lp_buffer
 
@@ -228,7 +232,7 @@ def main(api_key, octo_account):
     # This gives us MPAN and tariff info
     result = session.get(f"https://api.octopus.energy/v1/accounts/{octo_account}")
     account = result.json()
-        
+
     addresses = []
     lp_buffer = []
 
@@ -284,7 +288,7 @@ def main(api_key, octo_account):
                 
                 # Get tariff info
                 meter_info = getPricing(meter_info, session)
-                
+
                 # Get consumption
                 if "serial" in meter_info:
                     meter_info['consumption'] = getConsumption(meter_info, session)
@@ -293,10 +297,12 @@ def main(api_key, octo_account):
                 lp = f'octopus_meter,mpan={meter_info["mpan"]},property={prop_info["id"]},account={prop_info["account_number"]},is_export={str(meter_info["is_export"])} start_date="{prop_info["start_date"]}" {int(dt.now().strftime("%s")) * 1000000000}'
                 lp_buffer.append(lp)
                 
-        prop_info['meters'].append(meter_info)
-    addresses.append(prop_info)
+            prop_info['meters'].append(meter_info)
+        addresses.append(prop_info)
+    
     
     # Turn it into LP
+    print(addresses)
     lp_buffer = lp_buffer + generateLP(addresses)
     [print(x) for x in lp_buffer]
 
