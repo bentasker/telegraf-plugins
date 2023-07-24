@@ -231,6 +231,7 @@ def main(api_key, octo_account):
         
     addresses = []
     lp_buffer = []
+
     # Iterate through addresses
     for prop in account['properties']:
         prop_info = {
@@ -285,7 +286,8 @@ def main(api_key, octo_account):
                 meter_info = getPricing(meter_info, session)
                 
                 # Get consumption
-                meter_info['consumption'] = getConsumption(meter_info, session)
+                if "serial" in meter_info:
+                    meter_info['consumption'] = getConsumption(meter_info, session)
                 
                 # Create some LP for the meter itself
                 lp = f'octopus_meter,mpan={meter_info["mpan"]},property={prop_info["id"]},account={prop_info["account_number"]},is_export={str(meter_info["is_export"])} start_date="{prop_info["start_date"]}" {int(dt.now().strftime("%s")) * 1000000000}'
