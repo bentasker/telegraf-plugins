@@ -129,7 +129,12 @@ def generateLP(addresses):
                 
             # Iterate through prices
             for price in meter['pricing']:
-                lp_buffer = lp_buffer + priceToLP(price, meter['tariff-code'])
+                # Don't output pricing information that flows in the wrong direction
+                #
+                # See comment on utilities/telegraf-plugins#17 for why this is needed
+                if ((meter['is_export'] and price['tariff_direction'] == "EXPORT") or
+                    (not meter['is_export'] and price['tariff_direction'] == "IMPORT")):
+                        lp_buffer = lp_buffer + priceToLP(price, meter['tariff-code'])
                 
             # and through consumption
             if "consumption" in meter:
@@ -302,7 +307,6 @@ def main(api_key, octo_account):
     
     
     # Turn it into LP
-    print(addresses)
     lp_buffer = lp_buffer + generateLP(addresses)
     [print(x) for x in lp_buffer]
 
