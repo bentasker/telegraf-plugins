@@ -69,11 +69,13 @@ def build_lp(entry):
         MEASUREMENT,
         f'type={wm_type}',
         f'url={url}',
-        f'author={author}',
         f'domain={domain}',
         f'srcdomain={source_domain}',
         'influxdb_database=webmentions'
               ]
+    
+    if len(author) > 0:
+        tagset.append(f'author={author}')
               
     fieldset = [
               f'id={wm_id}',
