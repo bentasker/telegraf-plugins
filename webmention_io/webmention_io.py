@@ -30,7 +30,7 @@ from urllib.parse import urlparse
 MEASUREMENT = "webmentions"
 
 # How far back should we tell the API to search?
-MINUTES = 60
+MINUTES = 720
 
 # A list of your API tokens, you'll have 1 per site that you've set up
 # on webmention.io
