@@ -40,8 +40,8 @@ def build_lp(entry):
     ''' Build line protocol to describe the mention
     '''
     
-    author = entry['author']['name'].replace(' ', '\ ')
-    author_url = entry['author']['url'].replace('"', '')
+    author = entry['author']['name'].replace(' ', '\ ').replace(",", "")
+    author_url = entry['author']['url'].replace('"', '').replace(",", "")
     
     # Convert time to nanosecond epoch
     do = dt.datetime.strptime(entry['wm-received'], '%Y-%m-%dT%H:%M:%SZ')
