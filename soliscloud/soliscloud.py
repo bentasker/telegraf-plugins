@@ -454,7 +454,9 @@ def extractInverterStats(inverter, station, config):
         "consumptionToday" : float(station['homeLoadTodayEnergy']),
         "consumptionTotal" : float(station['homeLoadTotalEnergy']),
         "consumption" : float(inverter['familyLoadPower']),
-        "consumptionStr" : f'"{inverter["familyLoadPowerStr"]}"'
+        "consumptionStr" : f'"{inverter["familyLoadPowerStr"]}"',
+        "activePower" : float(inverter['psum']),
+        "activePowerStr" : f'"{inverter["psumStr"]}"',
         }
     
     
