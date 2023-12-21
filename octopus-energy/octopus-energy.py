@@ -203,6 +203,16 @@ def priceToLP(price, tariff_code):
                                
     valid_from = int(parser.parse(price['valid_from']).strftime('%s'))
     
+    # We don't want to generate months of pricing, calculate a lower bound
+    tday = dt.now()
+    nday = tday - tdel(days=3)
+    # Convert to epoch and make sure it's aligned to a 30 boundary
+    valid_from_bound = round(int(nday.strftime("%s")) / 1800) * 1800
+    
+    if valid_from < valid_from_bound:
+        valid_from = valid_from_bound
+    
+    
     # Iterate through
     lp_buffer = []
     while valid_from < valid_to:
