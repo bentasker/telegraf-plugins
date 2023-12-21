@@ -87,7 +87,6 @@ def getPricing(meter, session):
     for product in result.json()['results']:
         
         if product['code'] == product_code:
-            print(f"Found Match {product['code']}")
             tariff_direction = product['direction']
             break
         
