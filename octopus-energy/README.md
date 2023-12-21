@@ -91,6 +91,38 @@ Notes:
 
 ----
 
+### Product Prefix Matching
+
+When changing tariff, I had [some issues](https://projects.bentasker.co.uk/gils_projects/issue/utilities/telegraf-plugins/17.html) with Octopus being slow to update the tariff-code reported for my meter. In Dec 2023 I experienced [a similar issue](https://projects.bentasker.co.uk/gils_projects/issue/utilities/telegraf-plugins/18.html) as a result of them changing the format of the product code.
+
+In theory, it's possible to derive a product code (needed to retrieve prices) from the tariff code listed for a meter:
+
+- Tariff code `E-1R-VAR-22-11-01-A` maps to product code `VAR-22-11-01`
+
+In Dec 23, however, Octopus updated the Agile code but not the original tariff code, with the result that `E-1R-AGILE-FLEX-22-11-25-A` didn't map to the new code (`AGILE-23-12-06`).
+
+[utilities/telegraf-plugins#18](https://projects.bentasker.co.uk/gils_projects/issue/utilities/telegraf-plugins/18.html) introduced new controls to help handle occurrences like this:
+
+
+```ini
+[[inputs.exec]]
+   interval = "15m"
+   data_format = "influx"
+   environment = [
+    "OCTOPUS_KEY=<my_key>",
+    "OCTOPUS_ACCOUNT=<my_account>",
+    "IMPORT_PRODUCT_PREFIX=AGILE-23"
+   ]
+   commands = [
+    "/usr/local/src/telegraf_plugins/octopus-energy.py"
+   ]
+```
+
+Environment variables `IMPORT_PRODUCT_PREFIX` and `EXPORT_PRODUCT_PREFIX` can be used to provide the desired beginning of a product code. If an exact match is achieved first, that'll be used instead.
+
+
+----
+
 ### License
 
 Copyright 2023, B Tasker. Released under [BSD 3 Clause](https://www.bentasker.co.uk/pages/licenses/bsd-3-clause.html).
