@@ -173,7 +173,6 @@ def consumedToLP(consumed, meter):
 def priceToLP(price, tariff_code):
     ''' Take a pricing dict and generate LP
     '''
-    {'value_exc_vat': 29.2574, 'value_inc_vat': 30.72027, 'valid_from': '2023-06-30T23:00:00Z', 'valid_to': None, 'payment_method': 'DIRECT_DEBIT'}
     
 
     tags = [
@@ -240,7 +239,7 @@ def main(api_key, octo_account):
 
     addresses = []
     lp_buffer = []
-
+    
     # Iterate through addresses
     for prop in account['properties']:
         prop_info = {
