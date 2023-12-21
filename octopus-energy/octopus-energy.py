@@ -76,11 +76,28 @@ def getPricing(meter, session):
     from_str = yday.strftime("%Y-%m-%d %H:%M:%SZ")
     tariff_direction = "UNKNOWN"
     
+    # See if there are any overrides specified in the environment
+    # if not, default to space to ensure we don't match
+    import_product_prefix = os.getenv("IMPORT_PRODUCT_PREFIX", " ")
+    export_product_prefix = os.getenv("EXPORT_PRODUCT_PREFIX", " ")
+    
     # Currently the tariff direction is only on the products listing, so we need to retrieve that and iterate
     # through the products looking for the product code.
     result = session.get(f"https://api.octopus.energy/v1/products/?period_from={from_str}")    
     for product in result.json()['results']:
+        
         if product['code'] == product_code:
+            print(f"Found Match {product['code']}")
+            tariff_direction = product['direction']
+            break
+        
+        if (not meter['is_export'] and product['direction'] != 'EXPORT' and 
+            product['code'].startswith(import_product_prefix)):
+            tariff_direction = product['direction']
+            break
+        
+        if (meter['is_export'] and product['direction'] == 'EXPORT' and 
+            product['code'].startswith(export_product_prefix)):
             tariff_direction = product['direction']
             break
     
