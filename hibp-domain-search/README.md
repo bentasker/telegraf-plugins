@@ -52,7 +52,7 @@ If you do this, to prevent excess load on the API (and avoid being rate limited)
 
 ### Output
 
-Output metrics are grouped in one of two ways.
+Output metrics are grouped in one of three ways.
 
 #### Grouped by email
 
@@ -71,6 +71,14 @@ These metrics carry tag `by` with the value `pwned_site`. They describe how many
 ```text
 hibp_domain_search,by=pwned_site,service=123RF,search_domain=example.com count=2i,emails="alice@example.com,bob@example.com"
 hibp_domain_search,by=pwned_site,service=Apollo,search_domain=example.com count=1i,emails="mallory@example.com"
+```
+
+### Grouped by search domain 
+
+This metric provides an overall count of affected mailboxes for the searched domain. It carries tag `by` with value `search_domain`
+
+```text
+hibp_domain_search,by=search_domain,search_domain=example.invalid count=0i
 ```
 
 ---

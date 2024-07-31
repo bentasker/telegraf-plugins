@@ -36,11 +36,15 @@ def placeRequest(path):
     r = requests.get("{}{}".format(BASE_URL, path), headers=headers)
     
     if r.status_code == 429:
-        print("Received a rate-limiting response - you're probably running the plugin too regularly")
+        print("Received a rate-limiting response - you're probably running the plugin too regularly", file=sys.stderr)
         sys.exit(1)
         
+    if "No data breach entries found for domain." in r.text:
+        print("No breaches found for domain {}".format(DOMAIN), file=sys.stderr)
+        return {}
+        
     if r.status_code != 200:
-        print("An unspecified error occurred")
+        print("An unspecified error occurred", file=sys.stderr)
         print(r.text)
         sys.exit(1)
         
@@ -67,7 +71,7 @@ def writePwnedStats(p):
 if __name__ == '__main__':    
 
     if not all([API_KEY, DOMAIN, BASE_URL]):
-        print("You must define environment vars HIBP_TOKEN and HIBP_SEARCH_DOMAIN")
+        print("You must define environment vars HIBP_TOKEN and HIBP_SEARCH_DOMAIN", file=sys.stderr)
         sys.exit(1)
 
     hits = placeRequest("/breacheddomain/{}".format(DOMAIN))
