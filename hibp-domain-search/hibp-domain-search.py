@@ -68,6 +68,13 @@ def writePwnedStats(p):
     print('{},{} count={}i,emails="{}"'.format(MEASUREMENT_NAME, tagset, count, emails))
 
 
+def writeDomainStat(dom, pwn_count):
+    ''' Write line protocol to describe the domain
+    '''
+    tagset="by=search_domain,search_domain={}".format(DOMAIN)
+    print('{},{} count={}i'.format(MEASUREMENT_NAME, tagset, pwn_count))
+    
+
 if __name__ == '__main__':    
 
     if not all([API_KEY, DOMAIN, BASE_URL]):
@@ -81,6 +88,7 @@ if __name__ == '__main__':
     #
     # Each top level attribute is a mailbox name under DOMAIN
     pwned_sites = {}
+    pwn_count = 0
     for mailbox in hits:
         email = "{}@{}".format(mailbox, DOMAIN)
         m = {
@@ -90,6 +98,7 @@ if __name__ == '__main__':
         }
         
         writeMailBoxLP(m)
+        pwn_count += 1
         
         # Update the mapping of pwned sites
         for pwned in hits[mailbox]:
@@ -105,3 +114,6 @@ if __name__ == '__main__':
     # Iterate through the collected site names and write details on those
     for pwned in pwned_sites:
         writePwnedStats(pwned_sites[pwned])
+
+    # Write a stat for the domain itself
+    writeDomainStat(DOMAIN, pwn_count)
