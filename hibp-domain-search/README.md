@@ -83,6 +83,13 @@ hibp_domain_search,by=search_domain,search_domain=example.invalid count=0i
 
 ---
 
+### Dashboard
+
+The file [`grafana_dashboard.json`](grafana_dashboard.json) is a small dashboard allowing the collected data to be visualised per domain and per email address.
+
+
+---
+
 ### Copyright
 
 Copyright (c) 2024 [Ben Tasker](https://www.bentasker.co.uk)
