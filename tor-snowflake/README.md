@@ -1,5 +1,36 @@
 # Tor Snowflake Plugin for Telegraf
 
+### Plugin Superseded
+
+This plugin is likely no longer required - snowflake is now able to expose a prometheus metrics endpoint.
+
+You can enable this by passing `-metrics` on the command line, for example in `docker-compose.yml`:
+```yaml
+services:
+    snowflake-proxy:
+        network_mode: host
+        image: thetorproject/snowflake-proxy:latest
+        container_name: snowflake-proxy
+        restart: unless-stopped
+        # The container uses entrypoint so what we're doing
+        # with command is appending args
+        command: -metrics
+```
+
+Telegraf's [prometheus input plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/prometheus) can then be used to collect metrics:
+
+```toml
+[[inputs.prometheus]]
+  # Scrape snowflake's metric endpoint
+  urls = ["http://127.0.0.1:9999/internal/metrics"]
+  namepass = ["tor_snowflake_proxy_connection*", "tor_snowflake_proxy_traffic_*"]
+```
+
+The primary difference between these and my original metrics are that they are cumulative.
+
+----
+
+### Background
 
 This `exec` plugin for [Telegraf](https://github.com/influxdata/telegraf) collects basic stats from [Tor's Snowflake](https://snowflake.torproject.org/), showing how many connections have been handled, and how much data sent.
 
