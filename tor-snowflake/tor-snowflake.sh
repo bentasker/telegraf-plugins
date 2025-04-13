@@ -69,13 +69,13 @@ do
 
     # Stats
     conns=`echo "$line" | cut -d\  -f9`
-    sent=`echo "$line" | cut -d\  -f14`
-    rec=`echo "$line" | cut -d\  -f17`
+    sent=`echo "$line" | cut -d\  -f21`
+    rec=`echo "$line" | cut -d\  -f16`
 
     # The unit used can vary, extract it and then convert
     # the relevant stats
-    sent_unit=`echo "$line" | cut -d\  -f15 | tr -d ',.'`
-    rec_unit=`echo "$line" | cut -d\  -f18 | tr -d ',.'`
+    sent_unit=`echo "$line" | cut -d\  -f22 | tr -d ',.'`
+    rec_unit=`echo "$line" | cut -d\  -f17 | tr -d ',.'`
 
     # Do conversions
     sent=`unit_to_bytes "$sent_unit" "$sent"`
