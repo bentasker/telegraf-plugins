@@ -316,7 +316,7 @@ class SolisCloud:
             # Otherwise, this request would hit the rate limit wait a bit and try again
             x += 1
             time.sleep(1)
-            if x > self.config("max_ratelimit_wait"):
+            if x > self.config["max_ratelimit_wait"]:
                 self.printDebug("Max ratelimit wait exceeded - something's gone wrong, please report it")
                 sys.exit(1)
             continue
